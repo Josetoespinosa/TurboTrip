@@ -3,7 +3,7 @@ using UnityEngine.InputSystem;
 
 public class Nick : MonoBehaviour
 {
-    public float Speed = 5;
+    public float Speed = 50;
     public float JumpForce = 15;
     private Rigidbody2D Rigidbody2D;
     private Animator animator;
@@ -27,11 +27,11 @@ public class Nick : MonoBehaviour
         Horizontal = 0f;
         if (Keyboard.current.aKey.isPressed)
         {
-            Horizontal -= 1f;
+            Horizontal -= 10f;
         }
         if (Keyboard.current.dKey.isPressed)
         {
-            Horizontal += 1f;
+            Horizontal += 10f;
         }
 
         animator.SetBool("Running", Horizontal != 0.0f);
