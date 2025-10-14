@@ -1,72 +1,149 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class Nick : MonoBehaviour
 {
-    public float Speed = 50;
-    public float JumpForce = 15;
-    private Rigidbody2D Rigidbody2D;
+    [Header("Movimiento")]
+    [Tooltip("Velocidad máxima base al empezar a correr")]
+    public float BaseMaxSpeed = 6f;
+    [Tooltip("Velocidad máxima cuando mantienes dirección por un tiempo")]
+    public float BoostedMaxSpeed = 12f;
+    [Tooltip("Segundos necesarios manteniendo misma dirección para llegar al boost máximo")]
+    public float TimeToMaxBoost = 1.5f;
+    [Tooltip("Aceleración horizontal (u/s^2)")]
+    public float Acceleration = 40f;
+    [Tooltip("Desaceleración cuando sueltas las teclas (u/s^2)")]
+    public float Deceleration = 50f;
+
+    [Header("Salto (altura variable con Space)")]
+    [Tooltip("Impulso inicial del salto")]
+    public float JumpImpulse = 12f;
+    [Tooltip("Fuerza vertical adicional mientras se mantiene Space")]
+    public float JumpHoldForce = 20f;
+    [Tooltip("Máximo tiempo que se puede seguir 'cargando' el salto")]
+    public float MaxJumpHoldTime = 0.25f;
+
+    [Header("Suelo")]
+    public float GroundRayDistance = 0.4f;
+    public LayerMask GroundMask = ~0; // por si quieres filtrar capas de suelo
+
+    private Rigidbody2D rb;
     private Animator animator;
-    private float Horizontal;
-    private bool Grounded;
 
+    private float inputDir;                // -1, 0, 1 según A/D
+    private float sameDirTimer = 0f;       // tiempo manteniendo misma dirección
+    private int lastDirSign = 0;           // para detectar cambio de dirección
 
-
-
+    private bool grounded;
+    private bool jumping;                  // true mientras estamos en fase de salto (para hold)
+    private float jumpHoldTimer = 0f;
 
     void Start()
     {
         Debug.Log("Nick has been initialized.");
-        Rigidbody2D = GetComponent<Rigidbody2D>();
+        rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
     }
 
-    // Update is called once per frame
     void Update()
     {
-        Horizontal = 0f;
-        if (Keyboard.current.aKey.isPressed)
+        // --- INPUT HORIZONTAL ---
+        inputDir = 0f;
+        if (Keyboard.current.aKey.isPressed) inputDir -= 1f;
+        if (Keyboard.current.dKey.isPressed) inputDir += 1f;
+
+        // Animación correr + flip
+        animator.SetBool("Running", Mathf.Abs(inputDir) > 0.01f);
+        if (inputDir < 0f) transform.localScale = new Vector3(-1f, 1f, 1f);
+        else if (inputDir > 0f) transform.localScale = new Vector3(1f, 1f, 1f);
+
+        // --- CHEQUEO SUELO ---
+        Debug.DrawRay(transform.position, Vector2.down * GroundRayDistance, Color.red);
+        grounded = Physics2D.Raycast(transform.position, Vector2.down, GroundRayDistance, GroundMask);
+
+        // --- SALTO: inicio al presionar Space (solo si en suelo) ---
+        if (Keyboard.current.spaceKey.wasPressedThisFrame && grounded)
         {
-            Horizontal -= 10f;
+            StartJump();
         }
-        if (Keyboard.current.dKey.isPressed)
+
+        // --- SALTO: mantener Space para más altura, con límite ---
+        if (jumping && Keyboard.current.spaceKey.isPressed && jumpHoldTimer < MaxJumpHoldTime)
         {
-            Horizontal += 10f;
+            // aplicamos una fuerza ascendente suave por FixedUpdate, aquí sólo acumulamos tiempo
+            jumpHoldTimer += Time.deltaTime;
+        }
+        // si se suelta Space o llega al límite, se acaba la fase de hold
+        if (jumping && (Keyboard.current.spaceKey.wasReleasedThisFrame || jumpHoldTimer >= MaxJumpHoldTime))
+        {
+            jumping = false;
         }
 
-        animator.SetBool("Running", Horizontal != 0.0f);
+        animator.SetBool("Jumping", !grounded);
 
-        if (Horizontal < 0.0f) transform.localScale = new Vector3(-1f, 1f, 1f);
-        else if (Horizontal > 0.0f) transform.localScale = new Vector3(1f, 1f, 1f);
-
-        Debug.DrawRay(transform.position, Vector2.down * 0.4f, Color.red);
-        if (Physics2D.Raycast(transform.position, Vector2.down, 0.4f))
+        // --- LÓGICA DE BOOST TEMPORAL DE VELOCIDAD MÁXIMA ---
+        int currentSign = Mathf.RoundToInt(Mathf.Sign(inputDir));
+        if (currentSign != 0)
         {
-            Grounded = true;
+            if (currentSign == lastDirSign)
+            {
+                sameDirTimer += Time.deltaTime; // seguimos sumando tiempo en la misma dirección
+            }
+            else
+            {
+                // Cambio de dirección → reiniciamos el temporizador para el boost
+                sameDirTimer = 0f;
+                lastDirSign = currentSign;
+            }
         }
         else
         {
-            Grounded = false;
+            // sin input: no seguimos acumulando, pero tampoco lo reseteamos del todo (se siente mejor)
+            sameDirTimer = Mathf.Max(0f, sameDirTimer - Time.deltaTime);
         }
-
-        if (Keyboard.current.wKey.isPressed && Grounded)
-        {
-            Jump();
-
-        }
-
-        animator.SetBool("Jumping", !Grounded);
-
-    }
-
-    private void Jump()
-    {
-        Debug.Log("Nick is jumping.");
-        Rigidbody2D.AddForce(Vector2.up * JumpForce);
     }
 
     private void FixedUpdate()
     {
-        Rigidbody2D.linearVelocity = new Vector2(Horizontal, Rigidbody2D.linearVelocity.y);
+        // --- CÁLCULO DE VELOCIDAD MÁXIMA SEGÚN TIEMPO MANTENIDO ---
+        float t = Mathf.Clamp01(TimeToMaxBoost > 0f ? (sameDirTimer / TimeToMaxBoost) : 1f);
+        float maxSpeedNow = Mathf.Lerp(BaseMaxSpeed, BoostedMaxSpeed, t);
+
+        // --- ACELERACIÓN / DESCELERACIÓN CON INERCIA SENCILLA ---
+        float targetSpeed = inputDir * maxSpeedNow;
+        float vx = rb.linearVelocity.x;
+
+        // Si hay input, aceleramos hacia target; si no, desaceleramos hacia 0
+        if (Mathf.Abs(inputDir) > 0.01f)
+        {
+            vx = Mathf.MoveTowards(vx, targetSpeed, Acceleration * Time.fixedDeltaTime);
+        }
+        else
+        {
+            vx = Mathf.MoveTowards(vx, 0f, Deceleration * Time.fixedDeltaTime);
+        }
+
+        // --- SALTO: aplicar fuerza de hold mientras dure la ventana ---
+        float vy = rb.linearVelocity.y;
+        if (jumping && jumpHoldTimer < MaxJumpHoldTime)
+        {
+            vy += (JumpHoldForce * Time.fixedDeltaTime);
+        }
+
+        rb.linearVelocity = new Vector2(vx, vy);
+    }
+
+    private void StartJump()
+    {
+        // Reiniciar componente vertical y dar impulso inicial
+        Vector2 v = rb.linearVelocity;
+        v.y = 0f;
+        rb.linearVelocity = v;
+
+        rb.AddForce(Vector2.up * JumpImpulse, ForceMode2D.Impulse);
+
+        jumping = true;
+        jumpHoldTimer = 0f;
+        Debug.Log("Nick is jumping.");
     }
 }
