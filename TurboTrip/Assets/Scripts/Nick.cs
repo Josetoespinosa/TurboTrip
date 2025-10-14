@@ -5,9 +5,9 @@ public class Nick : MonoBehaviour
 {
     [Header("Movimiento")]
     [Tooltip("Velocidad máxima base al empezar a correr")]
-    public float BaseMaxSpeed = 6f;
+    public float BaseMaxSpeed = 5f;
     [Tooltip("Velocidad máxima cuando mantienes dirección por un tiempo")]
-    public float BoostedMaxSpeed = 12f;
+    public float BoostedMaxSpeed = 8f;
     [Tooltip("Segundos necesarios manteniendo misma dirección para llegar al boost máximo")]
     public float TimeToMaxBoost = 1.5f;
     [Tooltip("Aceleración horizontal (u/s^2)")]
@@ -17,14 +17,14 @@ public class Nick : MonoBehaviour
 
     [Header("Salto (altura variable con Space)")]
     [Tooltip("Impulso inicial del salto")]
-    public float JumpImpulse = 12f;
+    public float JumpImpulse = 4f;
     [Tooltip("Fuerza vertical adicional mientras se mantiene Space")]
-    public float JumpHoldForce = 20f;
+    public float JumpHoldForce = 7f;
     [Tooltip("Máximo tiempo que se puede seguir 'cargando' el salto")]
     public float MaxJumpHoldTime = 0.25f;
 
     [Header("Suelo")]
-    public float GroundRayDistance = 0.4f;
+    public float GroundRayDistance = 0.2f;
     public LayerMask GroundMask = ~0; // por si quieres filtrar capas de suelo
 
     private Rigidbody2D rb;

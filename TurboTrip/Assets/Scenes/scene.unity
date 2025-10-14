@@ -446,7 +446,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!114 &979172416
 MonoBehaviour:
@@ -460,8 +460,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ead86bd7785c5b042983040780542528, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Speed: 2000
-  JumpForce: 30
+  BaseMaxSpeed: 5
+  BoostedMaxSpeed: 8
+  TimeToMaxBoost: 1.5
+  Acceleration: 40
+  Deceleration: 50
+  JumpImpulse: 4
+  JumpHoldForce: 7
+  MaxJumpHoldTime: 0.25
+  GroundRayDistance: 0.2
+  GroundMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
 --- !u!95 &979172417
 Animator:
   serializedVersion: 7
@@ -8352,7 +8362,7 @@ CompositeCollider2D:
   m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: ec9d92fc8983a524c93c5371ad61bf96, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -8403,7 +8413,7 @@ Rigidbody2D:
   m_LinearDamping: 0
   m_AngularDamping: 0.05
   m_GravityScale: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: ec9d92fc8983a524c93c5371ad61bf96, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -8424,7 +8434,7 @@ TilemapCollider2D:
   m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: ec9d92fc8983a524c93c5371ad61bf96, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
