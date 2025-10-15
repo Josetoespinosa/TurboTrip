@@ -192,29 +192,24 @@ public class Nick : MonoBehaviour
         Debug.Log("Nick is jumping.");
     }
 
+    // Realizamos Dash y pausamos gravedad
     private IEnumerator DashRoutine(float direction)
     {
         canDash = false;
         isDashing = true;
 
-        // Temporarily disable gravity
         float originalGravity = rb.gravityScale;
         rb.gravityScale = 0f;
 
-        // Reset vertical velocity
         rb.linearVelocity = new Vector2(0f, 0f);
 
-        // Apply horizontal dash
         rb.AddForce(Vector2.right * direction * DashImpulse, ForceMode2D.Impulse);
 
-        // Wait for dash duration
         yield return new WaitForSeconds(DashDuration);
 
-        // Re-enable gravity
         rb.gravityScale = originalGravity;
         isDashing = false;
 
-        // Start cooldown timer
         yield return new WaitForSeconds(DashCooldown);
         canDash = true;
     }
