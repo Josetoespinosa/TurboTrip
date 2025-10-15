@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections;
 
 public class Nick : MonoBehaviour
 {
@@ -23,9 +24,19 @@ public class Nick : MonoBehaviour
     [Tooltip("Máximo tiempo que se puede seguir 'cargando' el salto")]
     public float MaxJumpHoldTime = 0.25f;
 
+    [Header("Dash")]
+    [Tooltip("Impulso del dash")]
+    public float DashImpulse = 4f;
+    [Tooltip("Cooldown del dash")]
+    public float DashCooldown = 1f;
+    [Tooltip("Duracion del dash")]
+    public float DashDuration = 0.2f;
+
     [Header("Suelo")]
     public float GroundRayDistance = 0.2f;
     public LayerMask GroundMask = ~0; // por si quieres filtrar capas de suelo
+
+    public ParticleSystem doubleJumpParticles;
 
     private Rigidbody2D rb;
     private Animator animator;
@@ -35,7 +46,13 @@ public class Nick : MonoBehaviour
     private int lastDirSign = 0;           // para detectar cambio de dirección
 
     private bool grounded;
-    private bool jumping;                  // true mientras estamos en fase de salto (para hold)
+    private bool jumping;
+    private bool has_doublejump;
+    private bool has_dash;
+    private bool canDash = true;
+    private bool isDashing = false;
+    private float lastDashTime = -Mathf.Infinity;
+    private float lastMoveDir = 1f;
     private float jumpHoldTimer = 0f;
 
     void Start()
@@ -52,6 +69,9 @@ public class Nick : MonoBehaviour
         if (Keyboard.current.aKey.isPressed) inputDir -= 1f;
         if (Keyboard.current.dKey.isPressed) inputDir += 1f;
 
+        if (inputDir != 0)
+            lastMoveDir = inputDir;
+
         // Animación correr + flip
         animator.SetBool("Running", Mathf.Abs(inputDir) > 0.01f);
         if (inputDir < 0f) transform.localScale = new Vector3(-1f, 1f, 1f);
@@ -67,6 +87,17 @@ public class Nick : MonoBehaviour
             StartJump();
         }
 
+        if (Keyboard.current.spaceKey.wasPressedThisFrame && has_doublejump && !grounded)
+        {
+            StartJump();
+            has_doublejump = false;
+
+            if (doubleJumpParticles != null)
+            {
+                doubleJumpParticles.Play();
+            }
+        }
+
         // --- SALTO: mantener Space para más altura, con límite ---
         if (jumping && Keyboard.current.spaceKey.isPressed && jumpHoldTimer < MaxJumpHoldTime)
         {
@@ -74,12 +105,26 @@ public class Nick : MonoBehaviour
             jumpHoldTimer += Time.deltaTime;
         }
         // si se suelta Space o llega al límite, se acaba la fase de hold
-        if (jumping && (Keyboard.current.spaceKey.wasReleasedThisFrame || jumpHoldTimer >= MaxJumpHoldTime))
+       if (jumping && (Keyboard.current.spaceKey.wasReleasedThisFrame || jumpHoldTimer >= MaxJumpHoldTime))
         {
             jumping = false;
         }
 
         animator.SetBool("Jumping", !grounded);
+
+        //Dash 
+
+        if (Keyboard.current.shiftKey.wasPressedThisFrame && canDash && has_dash)
+        {
+            StartCoroutine(DashRoutine(lastMoveDir));
+        }
+
+        if (grounded)
+        {
+            has_doublejump = true;
+            has_dash = true;
+
+        }
 
         // --- LÓGICA DE BOOST TEMPORAL DE VELOCIDAD MÁXIMA ---
         int currentSign = Mathf.RoundToInt(Mathf.Sign(inputDir));
@@ -145,5 +190,32 @@ public class Nick : MonoBehaviour
         jumping = true;
         jumpHoldTimer = 0f;
         Debug.Log("Nick is jumping.");
+    }
+
+    private IEnumerator DashRoutine(float direction)
+    {
+        canDash = false;
+        isDashing = true;
+
+        // Temporarily disable gravity
+        float originalGravity = rb.gravityScale;
+        rb.gravityScale = 0f;
+
+        // Reset vertical velocity
+        rb.linearVelocity = new Vector2(0f, 0f);
+
+        // Apply horizontal dash
+        rb.AddForce(Vector2.right * direction * DashImpulse, ForceMode2D.Impulse);
+
+        // Wait for dash duration
+        yield return new WaitForSeconds(DashDuration);
+
+        // Re-enable gravity
+        rb.gravityScale = originalGravity;
+        isDashing = false;
+
+        // Start cooldown timer
+        yield return new WaitForSeconds(DashCooldown);
+        canDash = true;
     }
 }
