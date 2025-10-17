@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEditor.Rendering.LookDev;
+using UnityEngine;
 using UnityEngine.InputSystem;
-using System.Collections;
 
 public class Nick : MonoBehaviour
 {
@@ -39,7 +40,9 @@ public class Nick : MonoBehaviour
     public ParticleSystem doubleJumpParticles;
 
     private Rigidbody2D rb;
+    private CapsuleCollider2D capsuleCollider;
     private Animator animator;
+    private SpriteRenderer spriteRenderer;
 
     private float inputDir;                // -1, 0, 1 según A/D
     private float sameDirTimer = 0f;       // tiempo manteniendo misma dirección
@@ -47,8 +50,8 @@ public class Nick : MonoBehaviour
 
     private bool grounded;
     private bool jumping;
-    private bool has_doublejump;
-    private bool has_dash;
+    private bool hasDoublejump;
+    private bool hasDash;
     private bool canDash = true;
     private bool isDashing = false;
     private float lastDashTime = -Mathf.Infinity;
@@ -59,7 +62,9 @@ public class Nick : MonoBehaviour
     {
         Debug.Log("Nick has been initialized.");
         rb = GetComponent<Rigidbody2D>();
+        capsuleCollider = GetComponent<CapsuleCollider2D>(); 
         animator = GetComponent<Animator>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     void Update()
@@ -87,10 +92,10 @@ public class Nick : MonoBehaviour
             StartJump();
         }
 
-        if (Keyboard.current.spaceKey.wasPressedThisFrame && has_doublejump && !grounded)
+        if (Keyboard.current.spaceKey.wasPressedThisFrame && hasDoublejump && !grounded)
         {
             StartJump();
-            has_doublejump = false;
+            hasDoublejump = false;
 
             if (doubleJumpParticles != null)
             {
@@ -114,15 +119,15 @@ public class Nick : MonoBehaviour
 
         //Dash 
 
-        if (Keyboard.current.shiftKey.wasPressedThisFrame && canDash && has_dash)
+        if (Keyboard.current.shiftKey.wasPressedThisFrame && canDash && hasDash)
         {
             StartCoroutine(DashRoutine(lastMoveDir));
         }
 
         if (grounded)
         {
-            has_doublejump = true;
-            has_dash = true;
+            hasDoublejump = true;
+            hasDash = true;
 
         }
 
@@ -196,7 +201,9 @@ public class Nick : MonoBehaviour
     private IEnumerator DashRoutine(float direction)
     {
         canDash = false;
+        hasDash = false;
         isDashing = true;
+        UpdateSprite();
 
         float originalGravity = rb.gravityScale;
         rb.gravityScale = 0f;
@@ -212,5 +219,36 @@ public class Nick : MonoBehaviour
 
         yield return new WaitForSeconds(DashCooldown);
         canDash = true;
+        UpdateSprite();
+    }
+
+    private void UpdateSprite()
+    {
+        spriteRenderer.color = canDash ? Color.white : Color.yellow;
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Wall"))
+        {
+            float impactSpeed = rb.linearVelocity.magnitude;
+
+            if (impactSpeed > 1f)
+            {
+                Debug.Log("💥 Player hit wall hard! Speed: " + impactSpeed);
+
+                Vector2 recoilDirection = (transform.position - collision.transform.position).normalized;
+
+                float recoilForce = 10f; // tweak this value
+                rb.AddForce(recoilDirection * recoilForce, ForceMode2D.Impulse);
+
+                CameraShake.Instance.Shake(0.2f, 0.3f);
+            }
+
+            else
+            {
+                Debug.Log("🧊 Player gently touched wall. Speed: " + impactSpeed);
+            }
+        }
     }
 }
