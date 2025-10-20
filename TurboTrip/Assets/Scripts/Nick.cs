@@ -222,7 +222,7 @@ public class Nick : MonoBehaviour
 
     private void UpdateSprite()
     {
-        spriteRenderer.color = canDash ? Color.white : Color.yellow;
+        spriteRenderer.color = canDash ? Color.white : Color.grey;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
