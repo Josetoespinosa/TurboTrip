@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using UnityEditor.Rendering.LookDev;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -27,7 +26,7 @@ public class Nick : MonoBehaviour
 
     [Header("Dash")]
     [Tooltip("Impulso del dash")]
-    public float DashImpulse = 4f;
+    public float DashImpulse = 15f;
     [Tooltip("Cooldown del dash")]
     public float DashCooldown = 1f;
     [Tooltip("Duracion del dash")]
@@ -54,7 +53,6 @@ public class Nick : MonoBehaviour
     private bool hasDash;
     private bool canDash = true;
     private bool isDashing = false;
-    private float lastDashTime = -Mathf.Infinity;
     private float lastMoveDir = 1f;
     private float jumpHoldTimer = 0f;
 
@@ -110,7 +108,7 @@ public class Nick : MonoBehaviour
             jumpHoldTimer += Time.deltaTime;
         }
         // si se suelta Space o llega al límite, se acaba la fase de hold
-       if (jumping && (Keyboard.current.spaceKey.wasReleasedThisFrame || jumpHoldTimer >= MaxJumpHoldTime))
+        if (jumping && (Keyboard.current.spaceKey.wasReleasedThisFrame || jumpHoldTimer >= MaxJumpHoldTime))
         {
             jumping = false;
         }
@@ -233,22 +231,16 @@ public class Nick : MonoBehaviour
         {
             float impactSpeed = rb.linearVelocity.magnitude;
 
-            if (impactSpeed > 1f)
+            if (impactSpeed > 10f)
             {
-                Debug.Log("💥 Player hit wall hard! Speed: " + impactSpeed);
-
                 Vector2 recoilDirection = (transform.position - collision.transform.position).normalized;
 
-                float recoilForce = 10f; // tweak this value
+                float recoilForce = 10f;
                 rb.AddForce(recoilDirection * recoilForce, ForceMode2D.Impulse);
 
                 CameraShake.Instance.Shake(0.2f, 0.3f);
             }
 
-            else
-            {
-                Debug.Log("🧊 Player gently touched wall. Speed: " + impactSpeed);
-            }
         }
     }
 }
