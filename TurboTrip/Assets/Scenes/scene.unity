@@ -2116,20 +2116,29 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   BaseMaxSpeed: 5
-  BoostedMaxSpeed: 9
+  BoostedMaxSpeed: 6
   TimeToMaxBoost: 1.5
   Acceleration: 40
-  Deceleration: 30
+  GroundFriction: 10
+  AirFriction: 5
+  TurnResistance: 0.6
+  AirControl: 0.7
   JumpImpulse: 4
   JumpHoldForce: 7
-  MaxJumpHoldTime: 0.25
-  DashImpulse: 13
-  DashCooldown: 1
+  MaxJumpHoldTime: 0.75
+  DashJumpWindow: 1
+  DashHoldFactor: 0.5
+  DashSpeed: 13
   DashDuration: 0.2
+  DashCooldown: 1
+  DashCarryOver: 0.5
   GroundRayDistance: 0.2
   GroundMask:
     serializedVersion: 2
     m_Bits: 4294967295
+  WallProbeDistance: 0.1
+  WallProbeOffset: {x: 0, y: 0.05}
+  AntiStickMinSpeed: 0.3
   doubleJumpParticles: {fileID: 1422760818}
 --- !u!95 &979172417
 Animator:
