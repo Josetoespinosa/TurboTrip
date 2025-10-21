@@ -14,7 +14,7 @@ public class Nick : MonoBehaviour
     [Tooltip("Aceleración horizontal (u/s^2)")]
     public float Acceleration = 40f;
     [Tooltip("Desaceleración cuando sueltas las teclas (u/s^2)")]
-    public float Deceleration = 50f;
+    public float Deceleration = 15f;
 
     [Header("Salto (altura variable con Space)")]
     [Tooltip("Impulso inicial del salto")]
@@ -26,11 +26,11 @@ public class Nick : MonoBehaviour
 
     [Header("Dash")]
     [Tooltip("Impulso del dash")]
-    public float DashImpulse = 15f;
+    public float DashImpulse = 12f;
     [Tooltip("Cooldown del dash")]
-    public float DashCooldown = 1f;
+    public float DashCooldown = 3f;
     [Tooltip("Duracion del dash")]
-    public float DashDuration = 0.2f;
+    public float DashDuration = 0.15f;
 
     [Header("Suelo")]
     public float GroundRayDistance = 0.2f;
