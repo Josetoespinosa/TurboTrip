@@ -52,6 +52,13 @@ public class Nick : MonoBehaviour
     [Header("VFX")]
     public ParticleSystem doubleJumpParticles;
 
+    [Header("SFX")]
+    public AudioSource audioSource;
+    public AudioClip jumpSFX;
+    public AudioClip dashSFX;
+    public AudioClip wallhitSFX;
+    public float hitSpeedThreshold = 8f;
+
     // ===== Componentes =====
     private Rigidbody2D rb;
     private CapsuleCollider2D capsuleCollider;
@@ -70,6 +77,8 @@ public class Nick : MonoBehaviour
     private bool canDash = true;
     private bool isDashing = false;
     private float lastMoveDir = 1f;
+    private Vector2 preCollisionVelocity;
+
 
     private float jumpHoldTimer = 0f;
     private float currentMaxJumpHold;      // puede reducirse por dash-jump
@@ -155,6 +164,8 @@ public class Nick : MonoBehaviour
     {
         float dt = Time.fixedDeltaTime;
 
+        preCollisionVelocity = rb.linearVelocity;
+
         // Si estamos dashing, imponemos velocidad y salimos (sin clamps/fricción)
         if (isDashing)
         {
@@ -217,6 +228,9 @@ public class Nick : MonoBehaviour
     {
         bool withinDashWindow = (Time.time - lastDashTime) <= DashJumpWindow;
 
+        if (audioSource && jumpSFX)
+            audioSource.PlayOneShot(jumpSFX);
+
         if (isDashing) EndDashImmediately();
 
         Vector2 v = rb.linearVelocity;
@@ -240,6 +254,9 @@ public class Nick : MonoBehaviour
         isDashing = true;
         lastDashTime = Time.time;
         if (spriteRenderer) spriteRenderer.color = Color.grey;
+
+        if (audioSource && dashSFX)
+            audioSource.PlayOneShot(dashSFX);
 
         float savedGravity = rb.gravityScale;
         rb.gravityScale = 0f;
@@ -280,19 +297,45 @@ public class Nick : MonoBehaviour
         return hit.collider != null;
     }
 
-    /*private void OnCollisionEnter2D(Collision2D collision)
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        // Si chocas fuerte contra cualquier colisionable en GroundMask, corta momentum hacia esa normal
-        if (((1 << collision.collider.gameObject.layer) & GroundMask) != 0)
+        Vector2 bestNormal = Vector2.zero;
+        float bestDot = -1f;
+
+        foreach (ContactPoint2D c in collision.contacts)
         {
-            float impactSpeed = rb.linearVelocity.magnitude;
-            if (impactSpeed > 10f)
+            float dot = Mathf.Abs(c.normal.x);
+            if (dot > bestDot)
             {
-                Vector2 normal = collision.contacts[0].normal;
-                // Anula componente del momentum hacia la pared
-                float proj = Vector2.Dot(momentum, -normal);
-                if (proj > 0f) momentum -= (-normal) * proj;
+                bestDot = dot;
+                bestNormal = c.normal;
             }
         }
-    }*/
+
+        if (Mathf.Abs(bestNormal.x) < 0.3f) return;
+
+        float horizontalSpeed = Mathf.Abs(preCollisionVelocity.x);
+
+        bool strongBounce = isDashing || horizontalSpeed > DashSpeed * 0.9f;
+
+        float bounceX = -preCollisionVelocity.x;
+
+        if (strongBounce)
+        {
+            bounceX *= 1.2f;
+            audioSource.PlayOneShot(wallhitSFX);
+        }
+        else
+        {
+            bounceX = Mathf.Sign(bounceX) * Mathf.Max(Mathf.Abs(bounceX), 2f);
+        }
+
+        rb.linearVelocity = new Vector2(bounceX, rb.linearVelocity.y);
+        momentum = rb.linearVelocity;
+
+        if (isDashing)
+            EndDashImmediately();
+    }
+
+
 }
