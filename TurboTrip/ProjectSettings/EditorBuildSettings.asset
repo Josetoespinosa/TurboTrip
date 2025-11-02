@@ -9,11 +9,20 @@ EditorBuildSettings:
     path: Assets/Sprites/Scenes/SampleScene.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02
   - enabled: 1
-    path: Assets/Scenes/scene.unity
-    guid: dcac85ac13dc2f54c862d4fb9a79531f
+    path: Assets/Scenes/Home.unity
+    guid: f65d3360cf3a1284a9706e1efb44b87a
+  - enabled: 1
+    path: Assets/Scenes/WorldSelection.unity
+    guid: f5c3e82d123f51d4781b1837bdcf11aa
+  - enabled: 1
+    path: Assets/Scenes/LevelSelection.unity
+    guid: 337dcd2756341b841998fd81d800cbe2
   - enabled: 1
     path: Assets/Scenes/LoadingScene.unity
     guid: f9d4e8e49ac1644e6a7002ccc02694f8
+  - enabled: 1
+    path: Assets/Scenes/Level_1_1.unity
+    guid: dcac85ac13dc2f54c862d4fb9a79531f
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0

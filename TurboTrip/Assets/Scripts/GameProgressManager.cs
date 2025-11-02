@@ -1,0 +1,233 @@
+using UnityEngine;
+using System.Collections.Generic;
+
+/// <summary>
+/// Manages player progress including unlocked worlds, levels, and completion status.
+/// Singleton pattern with PlayerPrefs persistence.
+/// </summary>
+public class GameProgressManager : MonoBehaviour
+{
+    public static GameProgressManager Instance { get; private set; }
+    
+    [Header("Game Data")]
+    [Tooltip("All worlds in the game, in order")]
+    public WorldData[] allWorlds;
+    
+    private HashSet<string> unlockedWorlds = new HashSet<string>();
+    private HashSet<string> unlockedLevels = new HashSet<string>();
+    private Dictionary<string, float> levelBestTimes = new Dictionary<string, float>();
+    private Dictionary<string, bool> levelCompleted = new Dictionary<string, bool>();
+    
+    // Currently selected world/level for navigation
+    public WorldData selectedWorld { get; private set; }
+    public LevelData selectedLevel { get; private set; }
+    
+    void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
+        
+        LoadProgress();
+    }
+    
+    #region Progress Management
+    
+    public bool IsWorldUnlocked(WorldData world)
+    {
+        if (world == null) return false;
+        if (world.unlockedByDefault) return true;
+        return unlockedWorlds.Contains(world.worldName);
+    }
+    
+    public bool IsLevelUnlocked(LevelData level)
+    {
+        if (level == null) return false;
+        if (level.unlockedByDefault) return true;
+        return unlockedLevels.Contains(GetLevelKey(level));
+    }
+    
+    public void UnlockWorld(WorldData world)
+    {
+        if (world == null) return;
+        unlockedWorlds.Add(world.worldName);
+        SaveProgress();
+    }
+    
+    public void UnlockLevel(LevelData level)
+    {
+        if (level == null) return;
+        unlockedLevels.Add(GetLevelKey(level));
+        SaveProgress();
+    }
+    
+    public void CompleteLevel(LevelData level, float time)
+    {
+        if (level == null) return;
+        
+        string key = GetLevelKey(level);
+        levelCompleted[key] = true;
+        
+        // Update best time if this is better
+        if (!levelBestTimes.ContainsKey(key) || time < levelBestTimes[key])
+        {
+            levelBestTimes[key] = time;
+        }
+        
+        // Auto-unlock next level in the world
+        UnlockNextLevel(level);
+        
+        SaveProgress();
+    }
+    
+    public bool IsLevelCompleted(LevelData level)
+    {
+        if (level == null) return false;
+        return levelCompleted.ContainsKey(GetLevelKey(level)) && levelCompleted[GetLevelKey(level)];
+    }
+    
+    public float GetBestTime(LevelData level)
+    {
+        if (level == null) return 0f;
+        string key = GetLevelKey(level);
+        return levelBestTimes.ContainsKey(key) ? levelBestTimes[key] : 0f;
+    }
+    
+    private void UnlockNextLevel(LevelData completedLevel)
+    {
+        // Find the world containing this level
+        foreach (var world in allWorlds)
+        {
+            if (world == null || world.levels == null) continue;
+            
+            for (int i = 0; i < world.levels.Length; i++)
+            {
+                if (world.levels[i] == completedLevel && i + 1 < world.levels.Length)
+                {
+                    // Unlock next level
+                    UnlockLevel(world.levels[i + 1]);
+                    
+                    // If this was the last level, unlock next world
+                    if (i + 1 >= world.levels.Length - 1)
+                    {
+                        int worldIndex = System.Array.IndexOf(allWorlds, world);
+                        if (worldIndex >= 0 && worldIndex + 1 < allWorlds.Length)
+                        {
+                            UnlockWorld(allWorlds[worldIndex + 1]);
+                        }
+                    }
+                    return;
+                }
+            }
+        }
+    }
+    
+    #endregion
+    
+    #region Navigation
+    
+    public void SelectWorld(WorldData world)
+    {
+        selectedWorld = world;
+    }
+    
+    public void SelectLevel(LevelData level)
+    {
+        selectedLevel = level;
+    }
+    
+    #endregion
+    
+    #region Persistence
+    
+    private string GetLevelKey(LevelData level)
+    {
+        return $"{level.name}";
+    }
+    
+    private void SaveProgress()
+    {
+        // Save unlocked worlds
+        PlayerPrefs.SetString("UnlockedWorlds", string.Join(",", unlockedWorlds));
+        
+        // Save unlocked levels
+        PlayerPrefs.SetString("UnlockedLevels", string.Join(",", unlockedLevels));
+        
+        // Save completed levels
+        List<string> completed = new List<string>();
+        foreach (var kvp in levelCompleted)
+        {
+            if (kvp.Value) completed.Add(kvp.Key);
+        }
+        PlayerPrefs.SetString("CompletedLevels", string.Join(",", completed));
+        
+        // Save best times
+        foreach (var kvp in levelBestTimes)
+        {
+            PlayerPrefs.SetFloat($"BestTime_{kvp.Key}", kvp.Value);
+        }
+        
+        PlayerPrefs.Save();
+    }
+    
+    private void LoadProgress()
+    {
+        // Load unlocked worlds
+        string worldsStr = PlayerPrefs.GetString("UnlockedWorlds", "");
+        if (!string.IsNullOrEmpty(worldsStr))
+        {
+            unlockedWorlds = new HashSet<string>(worldsStr.Split(','));
+        }
+        
+        // Load unlocked levels
+        string levelsStr = PlayerPrefs.GetString("UnlockedLevels", "");
+        if (!string.IsNullOrEmpty(levelsStr))
+        {
+            unlockedLevels = new HashSet<string>(levelsStr.Split(','));
+        }
+        
+        // Load completed levels
+        string completedStr = PlayerPrefs.GetString("CompletedLevels", "");
+        if (!string.IsNullOrEmpty(completedStr))
+        {
+            foreach (string levelKey in completedStr.Split(','))
+            {
+                if (!string.IsNullOrEmpty(levelKey))
+                {
+                    levelCompleted[levelKey] = true;
+                }
+            }
+        }
+        
+        // Load best times
+        foreach (var world in allWorlds)
+        {
+            if (world == null || world.levels == null) continue;
+            foreach (var level in world.levels)
+            {
+                if (level == null) continue;
+                string key = GetLevelKey(level);
+                if (PlayerPrefs.HasKey($"BestTime_{key}"))
+                {
+                    levelBestTimes[key] = PlayerPrefs.GetFloat($"BestTime_{key}");
+                }
+            }
+        }
+    }
+    
+    public void ResetProgress()
+    {
+        unlockedWorlds.Clear();
+        unlockedLevels.Clear();
+        levelBestTimes.Clear();
+        levelCompleted.Clear();
+        PlayerPrefs.DeleteAll();
+        PlayerPrefs.Save();
+    }
+    
+    #endregion
+}
