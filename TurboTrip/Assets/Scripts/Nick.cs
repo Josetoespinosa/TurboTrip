@@ -52,11 +52,25 @@ public class Nick : MonoBehaviour
     [Header("VFX")]
     public ParticleSystem doubleJumpParticles;
 
+    [Header("Animation")]
+    [Tooltip("Animator boolean parameter name to set true when performing a double jump; leave empty to disable")]
+    public string doubleJumpBoolName = "DoubleJump";
+    [Tooltip("Optional animator trigger name to fire for double jump; if set this will be used instead of the bool")]
+    public string doubleJumpTriggerName = "";
+    [Tooltip("Optional name of the double-jump animation clip. If set, its length will be used to auto-clear the parameter. Otherwise the fallback duration is used.")]
+    public string doubleJumpClipName = "";
+    [Tooltip("Fallback duration (seconds) to wait before clearing double-jump param when clip length can't be determined")]
+    public float doubleJumpFallbackDuration = 0.6f;
+
     // ===== Componentes =====
     private Rigidbody2D rb;
     private CapsuleCollider2D capsuleCollider;
     private Animator animator;
     private SpriteRenderer spriteRenderer;
+    // Local flag to suppress the single-jump animator while a double-jump animation is active
+    private bool doubleJumpActive = false;
+    // Coroutine handle for auto-clearing the double-jump parameter
+    private Coroutine doubleJumpAutoClearRoutine = null;
 
     // ===== Estado =====
     private float inputDir;                // -1, 0, 1
@@ -77,6 +91,8 @@ public class Nick : MonoBehaviour
     private float originalGravity;
 
     private Vector2 momentum = Vector2.zero;
+    // Whether the player is in a dead state (disable input/movement while true)
+    private bool dead = false;
 
     void Start()
     {
@@ -86,10 +102,14 @@ public class Nick : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         currentMaxJumpHold = MaxJumpHoldTime;
         originalGravity = rb.gravityScale;
+        // Ensure double-jump animator param starts cleared
+        if (animator != null && !string.IsNullOrEmpty(doubleJumpBoolName))
+            animator.SetBool(doubleJumpBoolName, false);
     }
 
     void Update()
     {
+        if (dead) return;
         // ---- INPUT HORIZONTAL ----
         inputDir = 0f;
         if (Keyboard.current.aKey.isPressed) inputDir -= 1f;
@@ -104,7 +124,13 @@ public class Nick : MonoBehaviour
         // ---- SUELO ----
         Debug.DrawRay(transform.position, Vector2.down * GroundRayDistance, Color.red);
         grounded = Physics2D.Raycast(transform.position, Vector2.down, GroundRayDistance, GroundMask);
-        if (animator) animator.SetBool("Jumping", !grounded);
+        if (animator)
+        {
+            if (doubleJumpActive)
+                animator.SetBool("Jumping", false);
+            else
+                animator.SetBool("Jumping", !grounded);
+        }
 
         // ---- SALTO (suelo) ----
         if (Keyboard.current.spaceKey.wasPressedThisFrame && grounded)
@@ -118,6 +144,26 @@ public class Nick : MonoBehaviour
             StartJump();
             hasDoublejump = false;
             if (doubleJumpParticles) doubleJumpParticles.Play();
+
+            if (animator != null)
+            {
+                // Prefer trigger if configured
+                if (!string.IsNullOrEmpty(doubleJumpTriggerName))
+                {
+                    animator.SetTrigger(doubleJumpTriggerName);
+                }
+                else if (!string.IsNullOrEmpty(doubleJumpBoolName))
+                {
+                    animator.SetBool(doubleJumpBoolName, true);
+                }
+                // Suppress standard jump animation while double-jump is active
+                doubleJumpActive = true;
+                animator.SetBool("Jumping", false);
+
+                // Start (or restart) auto-clear routine
+                if (doubleJumpAutoClearRoutine != null) StopCoroutine(doubleJumpAutoClearRoutine);
+                doubleJumpAutoClearRoutine = StartCoroutine(AutoClearDoubleJumpParam());
+            }
         }
 
         // ---- HOLD DEL SALTO ----
@@ -136,6 +182,18 @@ public class Nick : MonoBehaviour
         {
             hasDoublejump = true;
             hasDash = true;
+            // Clear double-jump animator param and cancel auto-clear when landing
+            if (animator != null)
+            {
+                if (!string.IsNullOrEmpty(doubleJumpBoolName))
+                    animator.SetBool(doubleJumpBoolName, false);
+                doubleJumpActive = false;
+            }
+            if (doubleJumpAutoClearRoutine != null)
+            {
+                StopCoroutine(doubleJumpAutoClearRoutine);
+                doubleJumpAutoClearRoutine = null;
+            }
         }
 
         // ---- BOOST por mantener dirección ----
@@ -153,6 +211,7 @@ public class Nick : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (dead) return;
         float dt = Time.fixedDeltaTime;
 
         // Si estamos dashing, imponemos velocidad y salimos (sin clamps/fricción)
@@ -235,6 +294,7 @@ public class Nick : MonoBehaviour
 
     private IEnumerator DashRoutine(float direction)
     {
+        if (dead) yield break;
         canDash = false;
         hasDash = false;
         isDashing = true;
@@ -268,6 +328,43 @@ public class Nick : MonoBehaviour
         if (spriteRenderer) spriteRenderer.color = Color.white;
     }
 
+    // Called by PlayerRespawnManager when player dies
+    private void OnDeath()
+    {
+        dead = true;
+        // Stop movement immediately
+        momentum = Vector2.zero;
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector2.zero;
+            rb.angularVelocity = 0f;
+            rb.simulated = false;
+        }
+        // Optionally reset animation flags
+        if (animator != null)
+        {
+            if (!string.IsNullOrEmpty(doubleJumpBoolName)) animator.SetBool(doubleJumpBoolName, false);
+            animator.SetBool("Jumping", false);
+            animator.SetBool("Running", false);
+        }
+    }
+
+    // Called by PlayerRespawnManager after respawn
+    private void OnRespawn()
+    {
+        dead = false;
+        if (rb != null)
+        {
+            rb.simulated = true;
+            rb.gravityScale = originalGravity;
+        }
+        // Clear states
+        jumping = false;
+        jumpHoldTimer = 0f;
+        hasDoublejump = true;
+        hasDash = true;
+    }
+
     private bool IsTouchingWall(int dirSign)
     {
         if (capsuleCollider == null) return false;
@@ -295,4 +392,44 @@ public class Nick : MonoBehaviour
             }
         }
     }*/
+    // Auto-clear coroutine: waits for the double-jump animation (clip length or fallback)
+    // then clears the animator bool (if used) and re-enables the regular Jumping animation.
+    private IEnumerator AutoClearDoubleJumpParam()
+    {
+        float waitTime = Mathf.Max(0f, doubleJumpFallbackDuration);
+
+        if (animator != null && !string.IsNullOrEmpty(doubleJumpClipName))
+        {
+            var controller = animator.runtimeAnimatorController;
+            if (controller != null)
+            {
+                foreach (var clip in controller.animationClips)
+                {
+                    if (clip == null) continue;
+                    if (clip.name.Equals(doubleJumpClipName, System.StringComparison.OrdinalIgnoreCase))
+                    {
+                        waitTime = clip.length;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (waitTime > 0f)
+            yield return new WaitForSeconds(waitTime);
+        else
+            yield return null;
+
+        if (animator != null)
+        {
+            if (!string.IsNullOrEmpty(doubleJumpBoolName))
+                animator.SetBool(doubleJumpBoolName, false);
+            // Restore Jumping bool based on whether we're grounded
+            animator.SetBool("Jumping", !grounded);
+        }
+
+        doubleJumpActive = false;
+        doubleJumpAutoClearRoutine = null;
+    }
+
 }
