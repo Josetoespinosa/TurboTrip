@@ -17,11 +17,12 @@ public class LevelSelectionUI : MonoBehaviour
     public TextMeshProUGUI worldTitleText;
     [Tooltip("Description text for the world")]
     public TextMeshProUGUI worldDescriptionText;
-    
+
     [Header("Navigation")]
     [Tooltip("Name of the world selection scene to return to")]
     public string worldSelectionSceneName = "WorldSelection";
     
+    public Button backButton;
     private GameProgressManager progressManager;
     private WorldData currentWorld;
     
@@ -29,6 +30,11 @@ public class LevelSelectionUI : MonoBehaviour
     {
         progressManager = GameProgressManager.Instance;
         
+        if (backButton != null)
+        {
+            backButton.onClick.AddListener(OnBackButton);
+        }
+
         if (progressManager == null)
         {
             Debug.LogError("GameProgressManager not found!");
@@ -54,6 +60,19 @@ public class LevelSelectionUI : MonoBehaviour
         {
             worldTitleText.text = currentWorld.worldName;
         }
+        else
+        {
+            // Try to find a TextMeshPro component named "Title" as fallback
+            var titleObj = GameObject.Find("Title");
+            if (titleObj != null)
+            {
+                var titleText = titleObj.GetComponent<TextMeshProUGUI>();
+                if (titleText != null)
+                {
+                    titleText.text = currentWorld.worldName;
+                }
+            }
+        }
         
         if (worldDescriptionText != null)
         {
@@ -67,6 +86,21 @@ public class LevelSelectionUI : MonoBehaviour
         {
             Debug.LogError("Level button container or prefab not assigned!");
             return;
+        }
+        
+        // Ensure container has a layout component to arrange buttons properly (same as WorldSelectionUI)
+        if (levelButtonContainer.GetComponent<VerticalLayoutGroup>() == null && 
+            levelButtonContainer.GetComponent<HorizontalLayoutGroup>() == null &&
+            levelButtonContainer.GetComponent<GridLayoutGroup>() == null)
+        {
+            var layoutGroup = levelButtonContainer.gameObject.AddComponent<VerticalLayoutGroup>();
+            layoutGroup.spacing = 20f;
+            layoutGroup.childAlignment = TextAnchor.UpperCenter;
+            layoutGroup.childControlWidth = true;
+            layoutGroup.childControlHeight = false;
+            layoutGroup.childForceExpandWidth = true;
+            layoutGroup.childForceExpandHeight = false;
+            Debug.Log("Added VerticalLayoutGroup to level button container");
         }
         
         // Clear existing buttons

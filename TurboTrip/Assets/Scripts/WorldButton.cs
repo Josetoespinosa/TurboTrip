@@ -38,7 +38,14 @@ public class WorldButton : MonoBehaviour
         if (worldNameText != null)
             worldNameText.text = data.worldName;
         else
-            Debug.LogWarning($"worldNameText is null on {gameObject.name}");
+        {
+            // Fallback: try to find button's text component
+            var buttonText = GetComponentInChildren<TextMeshProUGUI>();
+            if (buttonText != null)
+                buttonText.text = data.worldName;
+            else
+                Debug.LogWarning($"worldNameText is null on {gameObject.name}");
+        }
         
         if (worldDescriptionText != null)
             worldDescriptionText.text = data.description;
