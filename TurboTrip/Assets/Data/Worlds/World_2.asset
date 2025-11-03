@@ -17,6 +17,6 @@ MonoBehaviour:
   worldNumber: 2
   levels:
   - {fileID: 11400000, guid: d18fdd05655a50f4097360a2debab466, type: 2}
-  unlockedByDefault: 0
+  unlockedByDefault: 1
   worldIcon: {fileID: 0}
   worldColor: {r: 0, g: 1, b: 1, a: 1}

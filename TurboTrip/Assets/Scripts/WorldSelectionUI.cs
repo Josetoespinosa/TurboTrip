@@ -24,7 +24,6 @@ public class WorldSelectionUI : MonoBehaviour
     public string homeSceneName = "Home";
 
     public Button backButton;
-    
     private GameProgressManager progressManager;
     
     void Start()
@@ -156,7 +155,6 @@ public class WorldSelectionUI : MonoBehaviour
         Debug.Log("Returning to Home Menu");
         if (!string.IsNullOrEmpty(homeSceneName))
         {
-            // UnityEngine.SceneManagement.SceneManager.LoadScene(homeSceneName);
             SceneManager.LoadScene(homeSceneName);
         }
         else

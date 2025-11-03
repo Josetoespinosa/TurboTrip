@@ -17,11 +17,12 @@ public class LevelSelectionUI : MonoBehaviour
     public TextMeshProUGUI worldTitleText;
     [Tooltip("Description text for the world")]
     public TextMeshProUGUI worldDescriptionText;
-    
+
     [Header("Navigation")]
     [Tooltip("Name of the world selection scene to return to")]
     public string worldSelectionSceneName = "WorldSelection";
     
+    public Button backButton;
     private GameProgressManager progressManager;
     private WorldData currentWorld;
     
@@ -29,6 +30,11 @@ public class LevelSelectionUI : MonoBehaviour
     {
         progressManager = GameProgressManager.Instance;
         
+        if (backButton != null)
+        {
+            backButton.onClick.AddListener(OnBackButton);
+        }
+
         if (progressManager == null)
         {
             Debug.LogError("GameProgressManager not found!");

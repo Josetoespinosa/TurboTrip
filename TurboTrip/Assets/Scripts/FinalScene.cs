@@ -11,6 +11,22 @@ public class LoadingScreen : MonoBehaviour
 
     void Start()
     {
+
+        if (continueButton != null)
+        {
+            continueButton.onClick.AddListener(OnContinue);
+        }
+
+        if (retryButton != null)
+        {
+            retryButton.onClick.AddListener(OnRetry);
+        }
+
+        if (menuButton != null)
+        {
+            menuButton.onClick.AddListener(OnMenu);
+        }
+
         // Save level completion
         if (LevelTimer.Instance != null && GameProgressManager.Instance != null)
         {
@@ -43,16 +59,19 @@ public class LoadingScreen : MonoBehaviour
 
     void OnContinue()
     {
+        Debug.Log("Continue button clicked - Loading LevelSelection");
         // Return to level selection to choose next level
         UnityEngine.SceneManagement.SceneManager.LoadScene("LevelSelection");
     }
 
     void OnRetry()
     {
+        Debug.Log("Retry button clicked");
         // Reload current level
         var currentLevel = GameProgressManager.Instance?.selectedLevel;
         if (currentLevel != null && !string.IsNullOrEmpty(currentLevel.sceneName))
         {
+            Debug.Log($"Retrying level: {currentLevel.sceneName}");
             // Reset timer
             if (LevelTimer.Instance != null)
             {
@@ -60,10 +79,15 @@ public class LoadingScreen : MonoBehaviour
             }
             UnityEngine.SceneManagement.SceneManager.LoadScene(currentLevel.sceneName);
         }
+        else
+        {
+            Debug.LogError("Cannot retry - no level selected or scene name is empty!");
+        }
     }
 
     void OnMenu()
     {
+        Debug.Log("Menu button clicked - Loading Home");
         // Return to home menu
         UnityEngine.SceneManagement.SceneManager.LoadScene("Home");
     }
