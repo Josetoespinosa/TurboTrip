@@ -28,6 +28,10 @@ public class Movement2D : MonoBehaviour
     public CapsuleCollider2D capsuleCollider;
     public Animator animator;
     public SpriteRenderer spriteRenderer;
+    // When true, Movement2D will not set the animator's Jumping bool.
+    // Use this to temporarily suppress the single-jump animation (e.g. while double-jump plays).
+    [HideInInspector]
+    public bool suppressJumping = false;
 
     [Header("Lecturas (solo lectura)")]
     public Vector2 momentum;
@@ -45,7 +49,7 @@ public class Movement2D : MonoBehaviour
 
     void Update()
     {
-        // Flip + anim básica
+        // Flip + anim bï¿½sica
         if (input)
         {
             if (input.moveAxis < 0f) transform.localScale = new Vector3(-1f, 1f, 1f);
@@ -53,9 +57,9 @@ public class Movement2D : MonoBehaviour
 
             if (animator) animator.SetBool("Running", Mathf.Abs(input.moveAxis) > 0.01f);
         }
-        if (animator && groundCheck) animator.SetBool("Jumping", !groundCheck.grounded);
+    if (animator && groundCheck && !suppressJumping) animator.SetBool("Jumping", !groundCheck.grounded);
 
-        // Boost por mantener dirección
+        // Boost por mantener direcciï¿½n
         int currentSign = Mathf.RoundToInt(Mathf.Sign(input ? input.moveAxis : 0f));
         if (currentSign != 0)
         {

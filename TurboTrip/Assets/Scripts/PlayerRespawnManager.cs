@@ -8,6 +8,17 @@ public class PlayerRespawnManager : MonoBehaviour
     private GameObject currentPlayer;
     [Tooltip("Vertical offset applied on respawn to avoid immediate ground/spike overlap")]
     public float respawnYOffset = 0.5f;
+    [Header("Death animation")]
+    [Tooltip("Animator boolean parameter name used to indicate the player is dead; leave empty to disable")]
+    public string deathBoolName = "isDead";
+    [Tooltip("Optional animator trigger name used to play death animation; used if set")]
+    public string deathTriggerName = "";
+    [Tooltip("Optional clip name to detect animation length; if empty fallback is used")]
+    public string deathClipName = "";
+    [Tooltip("Fallback seconds to wait for death animation before respawn")]
+    public float deathFallbackSeconds = 0.8f;
+    [Tooltip("When true the manager will send OnDeath to the player (disabling control). Turn off if you want the animation but still allow player control")]
+    public bool disableControlOnDeath = true;
 
     void Start()
     {
@@ -47,7 +58,62 @@ public class PlayerRespawnManager : MonoBehaviour
             SpawnPlayer();
             return;
         }
-        StartCoroutine(RespawnCoroutine());
+        StartCoroutine(PlayDeathAndRespawn());
+    }
+
+    private IEnumerator PlayDeathAndRespawn()
+    {
+        if (currentPlayer == null)
+        {
+            SpawnPlayer();
+            yield break;
+        }
+
+        // Notify player and other components (optionally disable control)
+        if (disableControlOnDeath)
+            currentPlayer.SendMessage("OnDeath", SendMessageOptions.DontRequireReceiver);
+
+        // Try to play animation
+        Animator anim = currentPlayer.GetComponentInChildren<Animator>();
+        float wait = Mathf.Max(0f, deathFallbackSeconds);
+        if (anim != null)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(deathBoolName))
+                {
+                    anim.SetBool(deathBoolName, true);
+                }
+                else if (!string.IsNullOrEmpty(deathTriggerName))
+                {
+                    anim.SetTrigger(deathTriggerName);
+                }
+
+                var ctrl = anim.runtimeAnimatorController;
+                if (ctrl != null && !string.IsNullOrEmpty(deathClipName))
+                {
+                    foreach (var clip in ctrl.animationClips)
+                    {
+                        if (clip == null) continue;
+                        if (clip.name.Equals(deathClipName, System.StringComparison.OrdinalIgnoreCase))
+                        {
+                            wait = clip.length;
+                            break;
+                        }
+                    }
+                }
+            }
+            catch { wait = Mathf.Max(0f, deathFallbackSeconds); }
+        }
+
+        if (wait > 0f) yield return new WaitForSeconds(wait);
+
+        // Proceed to respawn
+        yield return StartCoroutine(RespawnCoroutine());
+
+        // Clear death bool if used
+        if (anim != null && !string.IsNullOrEmpty(deathBoolName))
+            anim.SetBool(deathBoolName, false);
     }
 
     // Call this from a checkpoint trigger to update the last checkpoint
