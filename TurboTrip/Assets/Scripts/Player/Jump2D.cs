@@ -13,18 +13,20 @@ public class Jump2D : MonoBehaviour
     public float DashJumpWindow = 1f;
     [Range(0f, 1f)] public float DashHoldFactor = 0.5f;
 
-    [Header("Referencias")]
+    [Header("VFX (opcional)")]
+    public ParticleSystem doubleJumpFx;
+
+    [Header("Referencias (autocables)")]
     public PlayerInputSimple input;
     public GroundCheck2D groundCheck;
     public Movement2D movement;
     public AbilitySystem abilities;
     public PlayerSfx sfx;
 
-    // estado
     float jumpHoldTimer;
     float currentMaxHold;
     bool jumping;
-    bool canDouble;   // se resetea al tocar suelo
+    bool canDouble;
     float lastDashTime = -999f;
 
     Rigidbody2D rb;
@@ -32,28 +34,34 @@ public class Jump2D : MonoBehaviour
     void Awake()
     {
         rb ??= GetComponent<Rigidbody2D>();
+        input ??= GetComponent<PlayerInputSimple>();
+        groundCheck ??= GetComponent<GroundCheck2D>();
+        movement ??= GetComponent<Movement2D>();
+        abilities ??= GetComponent<AbilitySystem>();
+        sfx ??= GetComponent<PlayerSfx>();
         currentMaxHold = MaxJumpHoldTime;
+
+        // Deja el VFX apagado de inicio
+        if (doubleJumpFx) doubleJumpFx.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
     }
 
     void Update()
     {
         bool grounded = groundCheck && groundCheck.grounded;
-
         if (grounded) canDouble = true;
 
-        // salto suelo (siempre disponible)
         if (input && input.jumpPressed && grounded)
             StartJump();
 
-        // doble salto si desbloqueado
+        // doble salto si está desbloqueado
         if (input && input.jumpPressed && !grounded && canDouble && abilities && abilities.Has(AbilitySystem.Ability.DoubleJump))
         {
             StartJump();
             canDouble = false;
             sfx?.PlayDoubleJump();
+            if (doubleJumpFx) doubleJumpFx.Play();
         }
 
-        // hold
         if (jumping && input && input.jumpHeld && jumpHoldTimer < currentMaxHold)
             jumpHoldTimer += Time.deltaTime;
 
@@ -81,14 +89,9 @@ public class Jump2D : MonoBehaviour
         currentMaxHold = withinDash ? MaxJumpHoldTime * DashHoldFactor : MaxJumpHoldTime;
 
         movement.SetHorizontalVelocity(rb.linearVelocity.x);
-
         jumping = true;
         jumpHoldTimer = 0f;
     }
 
-    // llamado por Dash2D
-    public void NotifyDashStarted()
-    {
-        lastDashTime = Time.time;
-    }
+    public void NotifyDashStarted() { lastDashTime = Time.time; }
 }
