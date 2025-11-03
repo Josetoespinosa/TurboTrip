@@ -60,6 +60,19 @@ public class LevelSelectionUI : MonoBehaviour
         {
             worldTitleText.text = currentWorld.worldName;
         }
+        else
+        {
+            // Try to find a TextMeshPro component named "Title" as fallback
+            var titleObj = GameObject.Find("Title");
+            if (titleObj != null)
+            {
+                var titleText = titleObj.GetComponent<TextMeshProUGUI>();
+                if (titleText != null)
+                {
+                    titleText.text = currentWorld.worldName;
+                }
+            }
+        }
         
         if (worldDescriptionText != null)
         {
@@ -73,6 +86,21 @@ public class LevelSelectionUI : MonoBehaviour
         {
             Debug.LogError("Level button container or prefab not assigned!");
             return;
+        }
+        
+        // Ensure container has a layout component to arrange buttons properly (same as WorldSelectionUI)
+        if (levelButtonContainer.GetComponent<VerticalLayoutGroup>() == null && 
+            levelButtonContainer.GetComponent<HorizontalLayoutGroup>() == null &&
+            levelButtonContainer.GetComponent<GridLayoutGroup>() == null)
+        {
+            var layoutGroup = levelButtonContainer.gameObject.AddComponent<VerticalLayoutGroup>();
+            layoutGroup.spacing = 20f;
+            layoutGroup.childAlignment = TextAnchor.UpperCenter;
+            layoutGroup.childControlWidth = true;
+            layoutGroup.childControlHeight = false;
+            layoutGroup.childForceExpandWidth = true;
+            layoutGroup.childForceExpandHeight = false;
+            Debug.Log("Added VerticalLayoutGroup to level button container");
         }
         
         // Clear existing buttons

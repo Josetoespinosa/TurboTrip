@@ -37,6 +37,13 @@ public class LevelButton : MonoBehaviour
         // Set level info
         if (levelNameText != null)
             levelNameText.text = data.levelName;
+        else
+        {
+            // Fallback: try to find button's text component
+            var buttonText = GetComponentInChildren<TextMeshProUGUI>();
+            if (buttonText != null)
+                buttonText.text = data.levelName;
+        }
         
         if (levelNumberText != null)
             levelNumberText.text = $"Level {data.levelNumber}";
