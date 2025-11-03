@@ -32,6 +32,7 @@ public class Movement2D : MonoBehaviour
     // Use this to temporarily suppress the single-jump animation (e.g. while double-jump plays).
     [HideInInspector]
     public bool suppressJumping = false;
+    public bool ignoreMaxSpeed = false;
 
     [Header("Lecturas (solo lectura)")]
     public Vector2 momentum;
@@ -39,6 +40,7 @@ public class Movement2D : MonoBehaviour
     public int lastDirSign;
 
     Rigidbody2D rb;
+    public Dash2D dash;
 
     void Awake()
     {
@@ -83,12 +85,6 @@ public class Movement2D : MonoBehaviour
         if (Mathf.Abs(momentum.x) > 0.01f) moveSign = (int)Mathf.Sign(momentum.x);
         else if (Mathf.Abs(inputAxis) > 0.01f) moveSign = (int)Mathf.Sign(inputAxis);
 
-        if (moveSign != 0 && IsTouchingWall(moveSign))
-        {
-            if (Mathf.Sign(momentum.x) == moveSign) momentum.x = 0f;
-            if (Mathf.Abs(rb.linearVelocity.x) < AntiStickMinSpeed && Mathf.Sign(inputAxis) == -moveSign)
-                momentum.x = 0f;
-        }
 
         float t = Mathf.Clamp01(TimeToMaxBoost > 0f ? (sameDirTimer / TimeToMaxBoost) : 1f);
         float maxSpeedNow = Mathf.Lerp(BaseMaxSpeed, BoostedMaxSpeed, t);
@@ -115,7 +111,9 @@ public class Movement2D : MonoBehaviour
                 momentum.x = Mathf.MoveTowards(momentum.x, momentum.x + Mathf.Sign(momentum.x) * 0.0001f, lightF);
         }
 
-        momentum.x = Mathf.Clamp(momentum.x, -maxSpeedNow, maxSpeedNow);
+        if (!ignoreMaxSpeed)
+            momentum.x = Mathf.Clamp(momentum.x, -maxSpeedNow, maxSpeedNow);
+
         rb.linearVelocity = new Vector2(momentum.x, rb.linearVelocity.y);
     }
 

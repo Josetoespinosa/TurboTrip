@@ -76,7 +76,6 @@ public class Jump2D : MonoBehaviour
         {
             StartJump();
             canDouble = false;
-            sfx?.PlayDoubleJump();
             if (doubleJumpFx) doubleJumpFx.Play();
 
             // Trigger animator double-jump parameter on Movement2D animator (if present)

@@ -6,7 +6,7 @@ using UnityEngine;
 public class Dash2D : MonoBehaviour
 {
     [Header("Dash")]
-    public float DashSpeed = 13f;
+    public float DashSpeed = 10f;
     public float DashDuration = 0.2f;
     public float DashCooldown = 1f;
     [Range(0f, 1f)] public float DashCarryOver = 0.5f;
@@ -21,7 +21,7 @@ public class Dash2D : MonoBehaviour
 
     bool canDash = true;
     float savedGravity;
-    bool isDashing = false;
+    public bool isDashing = false;
     Rigidbody2D rb;
 
     void Awake()
@@ -43,6 +43,7 @@ public class Dash2D : MonoBehaviour
     {
         canDash = false;
         isDashing = true;
+        movement.ignoreMaxSpeed = true;
         jump2D?.NotifyDashStarted();
 
         sfx?.PlayDash();
@@ -59,6 +60,7 @@ public class Dash2D : MonoBehaviour
 
         rb.gravityScale = savedGravity;
         isDashing = false;
+        movement.ignoreMaxSpeed = false;
 
         float carry = rb.linearVelocity.x * DashCarryOver;
         movement.SetHorizontalVelocity(carry);
