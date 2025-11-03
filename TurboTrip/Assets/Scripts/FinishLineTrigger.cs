@@ -1,69 +1,51 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-/// <summary>
-/// Simple finish line trigger for levels.
-/// Place this on a trigger collider at the end of your level.
-/// </summary>
 [RequireComponent(typeof(Collider2D))]
 public class FinishLineTrigger : MonoBehaviour
 {
     [Header("Scene to Load")]
-    [Tooltip("Scene to load when player finishes (usually LoadingScene)")]
     public string completionSceneName = "LoadingScene";
-    
+
     [Header("Visual Feedback (Optional)")]
     public ParticleSystem finishEffect;
     public AudioClip finishSound;
-    
+
     private bool hasTriggered = false;
-    
+
     void Awake()
     {
-        // Ensure this is a trigger
         var col = GetComponent<Collider2D>();
-        if (col != null)
-        {
-            col.isTrigger = true;
-        }
+        if (col) col.isTrigger = true;
     }
-    
+
     void OnTriggerEnter2D(Collider2D other)
     {
         if (hasTriggered) return;
-        
-        // Check if it's the player
-        bool isPlayer = other.CompareTag("Player") || other.GetComponentInParent<Nick>() != null;
-        if (!isPlayer) return;
-        
+        if (!IsPlayer(other)) return;
+
         hasTriggered = true;
-        
-        // Play visual effect
-        if (finishEffect != null)
-        {
-            finishEffect.Play();
-        }
-        
-        // Play sound
-        if (finishSound != null)
-        {
-            AudioSource.PlayClipAtPoint(finishSound, transform.position);
-        }
-        
-        // Stop level timer
+
+        if (finishEffect) finishEffect.Play();
+        if (finishSound) AudioSource.PlayClipAtPoint(finishSound, transform.position);
+
         if (LevelTimer.Instance != null)
-        {
             LevelTimer.Instance.FinishLevel();
-        }
-        
-        // Load completion scene
+
         if (!string.IsNullOrEmpty(completionSceneName))
-        {
             SceneManager.LoadScene(completionSceneName);
-        }
         else
-        {
             Debug.LogWarning("Completion scene name not set on FinishLineTrigger!");
-        }
+    }
+
+    private static bool IsPlayer(Component c)
+    {
+        if (c.CompareTag("Player")) return true;
+        // fallback por componentes del player
+        var go = c.gameObject;
+        return go.GetComponent<PlayerInputSimple>() != null
+            || go.GetComponent<AbilitySystem>() != null
+            || go.GetComponentInParent<PlayerInputSimple>() != null
+            || go.GetComponentInParent<AbilitySystem>() != null;
     }
 }

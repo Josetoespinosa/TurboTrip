@@ -2,34 +2,50 @@ using UnityEngine;
 
 public class SpikeTrigger : MonoBehaviour
 {
-    private PlayerRespawnManager respawnManager;
+    [SerializeField] private PlayerRespawnManager respawnManager;
 
-    void Start()
+    void Awake()
     {
-        respawnManager = FindAnyObjectByType<PlayerRespawnManager>();
+        // autoconfig: si no lo asignaste a mano, lo busca en la escena
+        if (!respawnManager)
+#if UNITY_2023_1_OR_NEWER
+            respawnManager = FindAnyObjectByType<PlayerRespawnManager>();
+#else
+            respawnManager = FindObjectOfType<PlayerRespawnManager>();
+#endif
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        bool isPlayer = collision.CompareTag("Player") || collision.GetComponentInParent<Nick>() != null;
-        if (!isPlayer) return;
-        if (respawnManager == null)
-        {
-            respawnManager = FindAnyObjectByType<PlayerRespawnManager>();
-            if (respawnManager == null) return;
-        }
-        respawnManager.KillPlayer();
+        if (!IsPlayer(collision)) return;
+        EnsureRespawnRef();
+        respawnManager?.KillPlayer();
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        bool isPlayer = collision.collider.CompareTag("Player") || collision.collider.GetComponentInParent<Nick>() != null;
-        if (!isPlayer) return;
-        if (respawnManager == null)
-        {
-            respawnManager = FindAnyObjectByType<PlayerRespawnManager>();
-            if (respawnManager == null) return;
-        }
-        respawnManager.KillPlayer();
+        if (!IsPlayer(collision.collider)) return;
+        EnsureRespawnRef();
+        respawnManager?.KillPlayer();
+    }
+
+    private void EnsureRespawnRef()
+    {
+        if (respawnManager) return;
+#if UNITY_2023_1_OR_NEWER
+        respawnManager = FindAnyObjectByType<PlayerRespawnManager>();
+#else
+        respawnManager = FindObjectOfType<PlayerRespawnManager>();
+#endif
+    }
+
+    private static bool IsPlayer(Component c)
+    {
+        if (c.CompareTag("Player")) return true;
+        var go = c.gameObject;
+        return go.GetComponent<PlayerInputSimple>() != null
+            || go.GetComponent<AbilitySystem>() != null
+            || go.GetComponentInParent<PlayerInputSimple>() != null
+            || go.GetComponentInParent<AbilitySystem>() != null;
     }
 }
