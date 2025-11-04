@@ -17,6 +17,7 @@ MonoBehaviour:
   worldNumber: 1
   levels:
   - {fileID: 11400000, guid: bfb539c260498c84bbd3fe34687e07c4, type: 2}
+  - {fileID: 11400000, guid: 52e5acead4f550d47a4cdc9f358b878d, type: 2}
   unlockedByDefault: 1
   worldIcon: {fileID: 0}
   worldColor: {r: 0, g: 1, b: 1, a: 1}

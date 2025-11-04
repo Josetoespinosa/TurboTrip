@@ -24,13 +24,11 @@ EditorBuildSettings:
     path: Assets/Scenes/Level_1_1_Testabilities.unity
     guid: dcac85ac13dc2f54c862d4fb9a79531f
   - enabled: 1
-<<<<<<< HEAD
     path: Assets/Scenes/Level_1_1.unity
     guid: 39d272df1dbb0cb4ea57288306fefe20
-=======
-    path: Assets/Scenes/Level_2_1.unity
-    guid: 6b6c0094c8cd5432185564eba027a666
->>>>>>> b62e127d23c3a81805ee2174789737ba5d7e7ba8
+  - enabled: 1
+    path: Assets/Scenes/Level_1_2.unity
+    guid: 2854501c0a97a4349bf964c0be6d3bca
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0
