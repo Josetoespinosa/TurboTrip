@@ -728,6 +728,8 @@ MonoBehaviour:
   allWorlds:
   - {fileID: 11400000, guid: 0a3ccba08a5923a49b7c7f88dc428c8e, type: 2}
   - {fileID: 11400000, guid: 57e4f2539b85999488ba2e38aded1017, type: 2}
+  - {fileID: 11400000, guid: 224c1e7cceb7edb4286af7ba283bf71e, type: 2}
+  - {fileID: 11400000, guid: 5ff6393109c3f034ebe629a76a6e524a, type: 2}
 --- !u!4 &1661077433
 Transform:
   m_ObjectHideFlags: 0
