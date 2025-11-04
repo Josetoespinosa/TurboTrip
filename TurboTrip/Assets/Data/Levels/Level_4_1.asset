@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: Level_4_1
   m_EditorClassIdentifier: 
   levelName: Level 1
-  description: A challenging level to test your skills.
+  description: Level 1 World 4
   levelNumber: 1
-  sceneName: Level_1_1
-  unlockedByDefault: 0
+  sceneName: Level_4_1
+  unlockedByDefault: 1
   levelIcon: {fileID: 0}
   levelColor: {r: 1, g: 1, b: 1, a: 1}
   targetTime: 60

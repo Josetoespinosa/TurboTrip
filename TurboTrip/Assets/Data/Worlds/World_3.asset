@@ -13,10 +13,11 @@ MonoBehaviour:
   m_Name: World_3
   m_EditorClassIdentifier: 
   worldName: World 3
-  description: The beginning of your journey.
+  description: World 3
   worldNumber: 3
   levels:
   - {fileID: 11400000, guid: 6139e915f2349bd4a97d9825489d39d5, type: 2}
+  - {fileID: 11400000, guid: 934902db7adb73c44a17bf600d456b31, type: 2}
   unlockedByDefault: 1
   worldIcon: {fileID: 0}
   worldColor: {r: 0, g: 1, b: 1, a: 1}

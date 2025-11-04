@@ -12,10 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b73556f3331dfc046af09e5dc302c386, type: 3}
   m_Name: World_4
   m_EditorClassIdentifier: 
-  worldName: World 1
-  description: The beginning of your journey.
-  worldNumber: 1
-  levels: []
+  worldName: World 4
+  description: World 4
+  worldNumber: 4
+  levels:
+  - {fileID: 11400000, guid: dcf1fc453fe13604082c623c3dad2c8f, type: 2}
+  - {fileID: 11400000, guid: 106516d0cfc52774ab1b7680668fd39e, type: 2}
   unlockedByDefault: 1
   worldIcon: {fileID: 0}
   worldColor: {r: 0, g: 1, b: 1, a: 1}
