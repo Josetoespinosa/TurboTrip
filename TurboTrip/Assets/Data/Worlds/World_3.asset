@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b73556f3331dfc046af09e5dc302c386, type: 3}
+  m_Name: World_3
+  m_EditorClassIdentifier: 
+  worldName: World 3
+  description: The beginning of your journey.
+  worldNumber: 3
+  levels:
+  - {fileID: 11400000, guid: 6139e915f2349bd4a97d9825489d39d5, type: 2}
+  unlockedByDefault: 1
+  worldIcon: {fileID: 0}
+  worldColor: {r: 0, g: 1, b: 1, a: 1}

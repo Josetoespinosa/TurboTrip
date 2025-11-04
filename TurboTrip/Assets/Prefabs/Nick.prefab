@@ -5225,7 +5225,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   JumpImpulse: 4
-  JumpHoldForce: 7
+  JumpHoldForce: 6
   MaxJumpHoldTime: 0.75
   DashJumpWindow: 1
   DashHoldFactor: 0.5
