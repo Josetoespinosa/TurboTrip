@@ -40,5 +40,6 @@ public class LevelTimer : MonoBehaviour
             return endTime - startTime;
         else
             return Time.time - startTime;
+            
     }
 }
