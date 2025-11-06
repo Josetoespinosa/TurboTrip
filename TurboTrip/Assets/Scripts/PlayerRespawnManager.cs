@@ -20,6 +20,8 @@ public class PlayerRespawnManager : MonoBehaviour
     [Tooltip("When true the manager will send OnDeath to the player (disabling control). Turn off if you want the animation but still allow player control")]
     public bool disableControlOnDeath = true;
 
+    public Movement2D movement;
+
     void Start()
     {
         // If a player already exists in the scene, adopt it instead of spawning a new one
@@ -27,6 +29,7 @@ public class PlayerRespawnManager : MonoBehaviour
         if (existingPlayer != null)
         {
             currentPlayer = existingPlayer;
+            movement = currentPlayer.GetComponent<Movement2D>();
             if (respawnPoint == null)
             {
                 // Default initial checkpoint to player's current position
@@ -40,6 +43,7 @@ public class PlayerRespawnManager : MonoBehaviour
 
         if (playerPrefab == null) return;
         SpawnPlayer();
+
     }
 
     void SpawnPlayer()
@@ -58,6 +62,7 @@ public class PlayerRespawnManager : MonoBehaviour
             SpawnPlayer();
             return;
         }
+        movement.canMove = false;
         StartCoroutine(PlayDeathAndRespawn());
     }
 
@@ -114,6 +119,8 @@ public class PlayerRespawnManager : MonoBehaviour
         // Clear death bool if used
         if (anim != null && !string.IsNullOrEmpty(deathBoolName))
             anim.SetBool(deathBoolName, false);
+
+        movement.canMove = true;
     }
 
     // Call this from a checkpoint trigger to update the last checkpoint

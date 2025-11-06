@@ -11,10 +11,10 @@ public class Movement2D : MonoBehaviour
     public float Acceleration = 40f;
 
     [Header("Inercia")]
-    public float GroundFriction = 10f;
+    public float GroundFriction = 50f;
     public float AirFriction = 6f;
     [Range(0f, 1f)] public float TurnResistance = 0.6f;
-    [Range(0f, 1f)] public float AirControl = 0.7f;
+    [Range(0f, 1f)] public float AirControl = 0.20f;
 
     [Header("Pared")]
     public float WallProbeDistance = 0.1f;
@@ -42,6 +42,8 @@ public class Movement2D : MonoBehaviour
     Rigidbody2D rb;
     public Dash2D dash;
 
+    public bool canMove = true;
+
     void Awake()
     {
         rb ??= GetComponent<Rigidbody2D>();
@@ -51,6 +53,15 @@ public class Movement2D : MonoBehaviour
 
     void Update()
     {
+        if (!canMove)
+    {
+        if (animator)
+        {
+            animator.SetBool("Running", false);
+            animator.SetBool("Jumping", false);
+        }
+        return;
+    }
         // Flip + anim b�sica
         if (input)
         {
@@ -76,6 +87,13 @@ public class Movement2D : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (!canMove)
+        {
+            momentum = Vector2.zero;
+            rb.linearVelocity = Vector2.zero;
+            return;
+        }
+
         float dt = Time.fixedDeltaTime;
         bool grounded = groundCheck && groundCheck.grounded;
         float inputAxis = input ? input.moveAxis : 0f;
@@ -89,15 +107,25 @@ public class Movement2D : MonoBehaviour
         float t = Mathf.Clamp01(TimeToMaxBoost > 0f ? (sameDirTimer / TimeToMaxBoost) : 1f);
         float maxSpeedNow = Mathf.Lerp(BaseMaxSpeed, BoostedMaxSpeed, t);
 
+        if (!grounded)
+            maxSpeedNow = BaseMaxSpeed;
+
         float accel = Acceleration * (grounded ? 1f : AirControl);
         float friction = grounded ? GroundFriction : AirFriction;
 
         float desiredAccel = inputAxis * accel;
 
-        if (Mathf.Abs(inputAxis) > 0.01f && Mathf.Abs(momentum.x) > 0.0001f &&
-            Mathf.Sign(inputAxis) != Mathf.Sign(momentum.x))
+        if (grounded && IsTouchingWall(moveSign))
         {
-            desiredAccel *= (1f - TurnResistance);
+            momentum.x = Mathf.MoveTowards(momentum.x, 0f, friction * dt);
+        }
+
+        if (!grounded)
+        {
+            if (Mathf.Abs(inputAxis) > 0.01f && Mathf.Sign(inputAxis) != Mathf.Sign(momentum.x))
+            {
+                desiredAccel *= (1f - (TurnResistance * 0.85f));
+            }
         }
 
         momentum.x += desiredAccel * dt;

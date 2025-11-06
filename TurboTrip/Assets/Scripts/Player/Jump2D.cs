@@ -68,11 +68,11 @@ public class Jump2D : MonoBehaviour
             if (movement != null) movement.suppressJumping = false;
         }
 
-        if (input && input.jumpPressed && grounded)
+        if (input && input.jumpPressed && grounded && movement.canMove)
             StartJump();
 
         // doble salto si est� desbloqueado
-        if (input && input.jumpPressed && !grounded && canDouble && abilities && abilities.Has(AbilitySystem.Ability.DoubleJump))
+        if (input && input.jumpPressed && !grounded && movement.canMove &&canDouble && abilities && abilities.Has(AbilitySystem.Ability.DoubleJump))
         {
             StartJump();
             canDouble = false;

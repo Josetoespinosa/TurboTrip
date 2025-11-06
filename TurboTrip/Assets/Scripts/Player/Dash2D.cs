@@ -32,7 +32,7 @@ public class Dash2D : MonoBehaviour
 
     void Update()
     {
-        if (input && input.dashPressed && canDash && abilities && abilities.Has(AbilitySystem.Ability.Dash))
+        if (input && input.dashPressed && movement.canMove && canDash && abilities && abilities.Has(AbilitySystem.Ability.Dash))
         {
             float dir = Mathf.Abs(input.moveAxis) < 0.1f ? Mathf.Sign(transform.localScale.x) : Mathf.Sign(input.moveAxis);
             StartCoroutine(DashRoutine(dir));
