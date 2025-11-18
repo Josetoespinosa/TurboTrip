@@ -1,7 +1,8 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
-public class NPCDialogueAbility : MonoBehaviour
+public class NPCDialogueAbilityEndLevel : MonoBehaviour
 {
     [Header("Diálogo")]
     [TextArea(2, 5)]
@@ -15,6 +16,10 @@ public class NPCDialogueAbility : MonoBehaviour
     [Header("Desbloqueo de habilidad")]
     public bool unlockAbilityOnFinish = true;
     public AbilitySystem.Ability abilityToUnlock = AbilitySystem.Ability.DoubleJump;
+
+    [Header("Fin de nivel / cambio de escena")]
+    public bool finishLevelOnFinish = true;
+    public string nextSceneName = "LoadingScene";
 
     [Header("Interacción")]
     public bool useTrigger = true;        // recomendado (OnTrigger)
@@ -102,11 +107,11 @@ public class NPCDialogueAbility : MonoBehaviour
         }
         else
         {
-            // fin
+            // Fin del diálogo
             if (dialoguePanel) dialoguePanel.SetActive(false);
             isDialogueActive = false;
 
-            // Desbloqueo
+            // 1) Desbloquear habilidad
             if (unlockAbilityOnFinish && playerAbilities != null)
             {
                 bool unlocked = playerAbilities.Unlock(abilityToUnlock);
@@ -115,8 +120,24 @@ public class NPCDialogueAbility : MonoBehaviour
                     : $"[NPC] Ya estaba desbloqueada: {abilityToUnlock}");
             }
 
-            // Mostrar prompt si sigue cerca
-            if (interactPanel && isPlayerNear) interactPanel.SetActive(true);
+            // 2) Terminar nivel y cambiar de escena (opcional)
+            if (finishLevelOnFinish)
+            {
+                if (LevelTimer.Instance != null)
+                {
+                    LevelTimer.Instance.FinishLevel();
+                }
+
+                if (!string.IsNullOrEmpty(nextSceneName))
+                {
+                    SceneManager.LoadScene(nextSceneName);
+                }
+            }
+            else
+            {
+                // Si no cambia de escena, vuelve a mostrar el prompt si el player sigue cerca
+                if (interactPanel && isPlayerNear) interactPanel.SetActive(true);
+            }
         }
     }
 
@@ -135,7 +156,6 @@ public class NPCDialogueAbility : MonoBehaviour
     private void OnTriggerStay2D(Collider2D other)
     {
         if (!useTrigger) return;
-
         // Nada especial; Update maneja la tecla
     }
 

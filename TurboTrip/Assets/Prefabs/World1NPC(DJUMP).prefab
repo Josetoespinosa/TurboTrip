@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 5894282214439571214}
   - component: {fileID: 6491785234247435838}
   m_Layer: 0
-  m_Name: DoubleJumpNPC
+  m_Name: World1NPC(DJUMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

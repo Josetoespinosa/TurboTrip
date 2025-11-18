@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 8322065767463066535}
   - component: {fileID: 6487106436728269078}
   m_Layer: 0
-  m_Name: DashNPC
+  m_Name: World2NPC(DASH)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
