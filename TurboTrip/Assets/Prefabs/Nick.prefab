@@ -5212,6 +5212,7 @@ MonoBehaviour:
   sameDirTimer: 0
   lastDirSign: 0
   dash: {fileID: 0}
+  canMove: 1
 --- !u!114 &2908011150451977785
 MonoBehaviour:
   m_ObjectHideFlags: 0
