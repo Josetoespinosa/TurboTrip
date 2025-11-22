@@ -60,6 +60,8 @@ public class Jump2D : MonoBehaviour
 
     void Update()
     {
+        if (movement != null && !movement.canMove) return;
+
         bool grounded = groundCheck && groundCheck.grounded;
         if (grounded)
         {
@@ -106,6 +108,8 @@ public class Jump2D : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (movement != null && !movement.canMove) return;
+
         if (jumping && jumpHoldTimer < currentMaxHold)
         {
             float vy = rb.linearVelocity.y + (JumpHoldForce * Time.fixedDeltaTime);

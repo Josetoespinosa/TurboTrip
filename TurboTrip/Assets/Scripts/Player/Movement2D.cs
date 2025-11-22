@@ -28,6 +28,8 @@ public class Movement2D : MonoBehaviour
     public CapsuleCollider2D capsuleCollider;
     public Animator animator;
     public SpriteRenderer spriteRenderer;
+    [Tooltip("When false, player movement and input are ignored (used by respawn/death logic)")]
+    public bool canMove = true;
     // When true, Movement2D will not set the animator's Jumping bool.
     // Use this to temporarily suppress the single-jump animation (e.g. while double-jump plays).
     [HideInInspector]
@@ -42,7 +44,6 @@ public class Movement2D : MonoBehaviour
     Rigidbody2D rb;
     public Dash2D dash;
 
-    public bool canMove = true;
 
     void Awake()
     {
@@ -54,14 +55,14 @@ public class Movement2D : MonoBehaviour
     void Update()
     {
         if (!canMove)
-    {
-        if (animator)
         {
-            animator.SetBool("Running", false);
-            animator.SetBool("Jumping", false);
+            if (animator)
+            {
+                animator.SetBool("Running", false);
+                animator.SetBool("Jumping", false);
+            }
+            return;
         }
-        return;
-    }
         // Flip + anim b�sica
         if (input)
         {

@@ -21,6 +21,13 @@ public class PlayerRespawnManager : MonoBehaviour
     public bool disableControlOnDeath = true;
 
     public Movement2D movement;
+    [Header("Fall death")]
+    [Tooltip("Enable automatic death and respawn when the player falls below `fallDeathY`")]
+    public bool enableFallDeath = true;
+    [Tooltip("World Y coordinate below which the player will be considered fallen and killed")]
+    public float fallDeathY = -20f;
+    // Guard so we don't trigger multiple concurrent respawns
+    private bool isRespawning = false;
 
     void Start()
     {
@@ -62,15 +69,18 @@ public class PlayerRespawnManager : MonoBehaviour
             SpawnPlayer();
             return;
         }
+        if (isRespawning) return;
         movement.canMove = false;
         StartCoroutine(PlayDeathAndRespawn());
     }
 
     private IEnumerator PlayDeathAndRespawn()
     {
+        isRespawning = true;
         if (currentPlayer == null)
         {
             SpawnPlayer();
+            isRespawning = false;
             yield break;
         }
 
@@ -121,6 +131,17 @@ public class PlayerRespawnManager : MonoBehaviour
             anim.SetBool(deathBoolName, false);
 
         movement.canMove = true;
+        isRespawning = false;
+    }
+
+    void Update()
+    {
+        if (!enableFallDeath || isRespawning) return;
+        if (currentPlayer == null) return;
+        if (currentPlayer.transform.position.y <= fallDeathY)
+        {
+            KillPlayer();
+        }
     }
 
     // Call this from a checkpoint trigger to update the last checkpoint
