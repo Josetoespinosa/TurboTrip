@@ -221,11 +221,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fdee85c4f516f4a428b734f7e41debd9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dialogueText: "\xA1Hola Nick! Aqu\xED no vendemos cigarros"
+  lines:
+  - "Hola Nick, \xBFotra vez por aqu\xED?"
+  - 'Recuerda: no vendas cigarros en el colegio.'
+  - Bueno, eso, suerte.
+  loopDialogue: 0
   dialoguePanel: {fileID: 7272873212712915357}
   dialogueUIText: {fileID: 6653972606269043564}
   interactPanel: {fileID: 8466316551502839474}
-  nextSceneName: LoadingScene
+  useTrigger: 1
+  talkRadius: 1.6
+  playerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  debugLogs: 0
 --- !u!70 &74433704
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -902,6 +911,9 @@ MonoBehaviour:
   deathClipName: 
   deathFallbackSeconds: 0.8
   disableControlOnDeath: 1
+  movement: {fileID: 0}
+  enableFallDeath: 1
+  fallDeathY: -20
 --- !u!4 &619340772
 Transform:
   m_ObjectHideFlags: 0
@@ -1402,6 +1414,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 979172411}
+  background: {fileID: 1668013923}
 --- !u!1001 &1027193308
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9970,8 +9983,8 @@ Transform:
   m_GameObject: {fileID: 1668013922}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 53.0213, y: 31.3576, z: 0}
-  m_LocalScale: {x: 25.058392, y: 11.375369, z: 1}
+  m_LocalPosition: {x: 53.0213, y: 22.5307, z: 0}
+  m_LocalScale: {x: 25.058392, y: 16.824171, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}

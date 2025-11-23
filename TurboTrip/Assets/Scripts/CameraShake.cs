@@ -1,42 +1,50 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 
 public class CameraShake : MonoBehaviour
 {
-    public static CameraShake Instance;   // easy access from anywhere
+    public Transform player;   // ← agrega referencia al jugador
+    public float duration = 0.15f;
+    public float shakePercentOfPlayer = 0.05f;
+    // 0.05 = 5% del tamaño del jugador
 
-    private Vector3 originalPosition;
-    private Coroutine shakeRoutine;
+    private Vector3 originalPos;
 
     void Awake()
     {
-        Instance = this;
-        originalPosition = transform.localPosition;
+        originalPos = transform.localPosition;
     }
 
-    public void Shake(float duration, float magnitude)
+    public void ShakeOnce(float customDuration = -1f, float customPercent = -1f)
     {
-        if (shakeRoutine != null)
-            StopCoroutine(shakeRoutine);
+        float d = customDuration > 0 ? customDuration : duration;
+        float p = customPercent > 0 ? customPercent : shakePercentOfPlayer;
 
-        shakeRoutine = StartCoroutine(ShakeCoroutine(duration, magnitude));
+        StopAllCoroutines();
+        StartCoroutine(DoShake(d, p));
     }
 
-    private IEnumerator ShakeCoroutine(float duration, float magnitude)
+    IEnumerator DoShake(float dur, float percent)
     {
         float elapsed = 0f;
 
-        while (elapsed < duration)
-        {
-            float x = Random.Range(-0.1f, 0.1f) * magnitude;
-            float y = Random.Range(-0.1f, 0.1f) * magnitude;
+        // tamaño del jugador según su bounding box
+        float playerSize = player ? player.localScale.magnitude : 1f;
 
-            transform.localPosition = originalPosition + new Vector3(x, y, 0f);
+        // magnitud real de la vibración
+        float magnitude = playerSize * percent;
+
+        while (elapsed < dur)
+        {
+            float x = Random.Range(-magnitude, magnitude);
+            float y = Random.Range(-magnitude, magnitude);
+
+            transform.localPosition = originalPos + new Vector3(x, y, 0);
 
             elapsed += Time.deltaTime;
             yield return null;
         }
 
-        transform.localPosition = originalPosition;
+        transform.localPosition = originalPos;
     }
 }

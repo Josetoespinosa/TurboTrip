@@ -2,20 +2,38 @@ using UnityEngine;
 
 public class CameraScript : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-     public GameObject player;
+    public GameObject player;
+    public SpriteRenderer background; // Asigna el fondo aquí
+
+    float minX, maxX, minY, maxY;
+
     void Start()
     {
-       
+        if (background == null) return;
+
+        // Tamaño real del fondo en el mundo
+        Bounds bgBounds = background.bounds;
+
+        // Tamaño de la cámara (ortográfica)
+        float camHeight = Camera.main.orthographicSize * 2f;
+        float camWidth = camHeight * Camera.main.aspect;
+
+        // Calcular límites
+        minX = bgBounds.min.x + camWidth / 2f;
+        maxX = bgBounds.max.x - camWidth / 2f;
+        minY = bgBounds.min.y + camHeight / 2f;
+        maxY = bgBounds.max.y - camHeight / 2f;
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (player == null) return;
-        Vector3 position = transform.position;
-        position.x = player.transform.position.x;
-        position.y = player.transform.position.y;
-        transform.position = position;
+
+        Vector3 pos = transform.position;
+
+        pos.x = Mathf.Clamp(player.transform.position.x, minX, maxX);
+        pos.y = Mathf.Clamp(player.transform.position.y, minY, maxY);
+
+        transform.position = pos;
     }
 }

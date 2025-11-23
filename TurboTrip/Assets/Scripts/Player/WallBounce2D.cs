@@ -17,6 +17,7 @@ public class WallBounce2D : MonoBehaviour
     public Movement2D movement;
     public Dash2D dash;
     public PlayerSfx sfx;
+    public CameraShake cameraShake;
 
     private Vector2 preCollisionVelocity;
 
@@ -65,6 +66,7 @@ public class WallBounce2D : MonoBehaviour
         {
             bounceX *= strongHitMultiplier;
             sfx?.PlayWallHit();
+            cameraShake?.ShakeOnce(0.15f, 0.2f);
         }
 
         rb.linearVelocity = new Vector2(bounceX, rb.linearVelocity.y);

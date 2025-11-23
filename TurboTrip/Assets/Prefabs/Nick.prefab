@@ -5284,6 +5284,7 @@ MonoBehaviour:
   movement: {fileID: 8923329023379929636}
   dash: {fileID: 2508204533136367516}
   sfx: {fileID: 1653227174880014054}
+  cameraShake: {fileID: 0}
 --- !u!114 &1653227174880014054
 MonoBehaviour:
   m_ObjectHideFlags: 0
