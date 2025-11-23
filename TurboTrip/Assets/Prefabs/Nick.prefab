@@ -5206,13 +5206,13 @@ MonoBehaviour:
   capsuleCollider: {fileID: 5104305921936036446}
   animator: {fileID: 1887922050925589624}
   spriteRenderer: {fileID: 2901484869982152514}
+  canMove: 1
   suppressJumping: 0
   ignoreMaxSpeed: 0
   momentum: {x: 0, y: 0}
   sameDirTimer: 0
   lastDirSign: 0
   dash: {fileID: 0}
-  canMove: 1
 --- !u!114 &2908011150451977785
 MonoBehaviour:
   m_ObjectHideFlags: 0
