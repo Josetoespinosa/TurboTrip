@@ -9,13 +9,13 @@ public class Homeless_script : MonoBehaviour
     [Tooltip("Distance at which the enemy will attempt to catch/attack (stop distance)")]
     public float catchDistance = 0.6f;
     [Tooltip("If player leaves this distance ( > detectionRadius * loseFactor ) the enemy gives up chase")]
-    public float loseFactor = 1.5f;
+    public float loseFactor = 1f;
 
     [Header("Movement")]
-    public float chaseSpeed = 3.5f;
+    public float chaseSpeed = 2f;
     public float patrolSpeed = 1.5f;
     public bool patrolWhenIdle = true;
-    public float patrolRange = 3f; // horizontal range from spawn when patrolling
+    public float patrolRange = 5f; // horizontal range from spawn when patrolling
     [Tooltip("Layers considered obstacles for the enemy (walls, ground, platforms)")]
     public LayerMask obstacleMask = ~0;
     [Tooltip("Radius used for obstacle checks (circlecast)")]
@@ -25,7 +25,9 @@ public class Homeless_script : MonoBehaviour
     private Transform player;
     private Rigidbody2D rb;
     private Vector3 spawnPosition;
-    private bool chasing = false;
+    // simple state machine for clearer AI behaviour
+    private enum State { Idle, Patrol, Chase, ReturnToSpawn, Attack }
+    private State state = State.Idle;
     [Header("Animation")]
     public Animator animator;
     public string runningParam = "Running";
@@ -37,6 +39,19 @@ public class Homeless_script : MonoBehaviour
     public float attackFallbackDelay = 0.35f;
     // prevent overlapping attack coroutines
     private bool isAttacking = false;
+    [Header("AI Settings")]
+    [Tooltip("Require an unobstructed line of sight (raycast) to begin/maintain chase")]
+    public bool requireLineOfSight = true;
+    [Tooltip("Layers considered blocking line of sight (walls, platforms)")]
+    public LayerMask lineOfSightMask;
+    [Tooltip("Acceleration used to smooth horizontal velocity when using Rigidbody2D")]
+    public float accel = 30f;
+    [Tooltip("Distance to check for ground ahead to avoid walking off edges")]
+    public float groundCheckDistance = 0.6f;
+    [Tooltip("Layer mask used for ground detection (default to obstacleMask if left empty)")]
+    public LayerMask groundMask;
+    [Tooltip("Return-to-spawn tolerance (units)")]
+    public float returnTolerance = 0.15f;
 
     // respawn manager reference to call KillPlayer
     private PlayerRespawnManager respawnManager;
@@ -46,6 +61,11 @@ public class Homeless_script : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         spawnPosition = transform.position;
         EnsureRespawnRef();
+        // initial state
+        state = patrolWhenIdle ? State.Patrol : State.Idle;
+        // default masks
+        if (lineOfSightMask == 0) lineOfSightMask = obstacleMask;
+        if (groundMask == 0) groundMask = obstacleMask;
     }
 
     void EnsureRespawnRef()
@@ -70,48 +90,92 @@ public class Homeless_script : MonoBehaviour
 
         float dist = Vector2.Distance(transform.position, player.position);
 
-        if (!chasing)
+        switch (state)
         {
-            if (dist <= detectionRadius)
-            {
-                chasing = true;
-            }
-            else
-            {
-                // patrol when idle
-                if (patrolWhenIdle) PatrolBehaviour();
+            case State.Idle:
+                if (dist <= detectionRadius && (!requireLineOfSight || HasLineOfSight()))
+                {
+                    state = State.Chase;
+                }
                 else
                 {
                     if (animator != null) animator.SetBool(runningParam, false);
                 }
-            }
-        }
-        else
-        {
-            // if player too far, stop chasing
-            if (dist > detectionRadius * loseFactor)
-            {
-                chasing = false;
-                return;
-            }
+                break;
 
-            // move towards player horizontally
-            Vector2 dir = (player.position - transform.position);
-            Vector2 move = new Vector2(Mathf.Sign(dir.x), 0f);
-            Move(move * chaseSpeed);
-
-            // flip sprite if any
-            FlipTowards(player.position.x);
-
-            // if close enough, perform attack (then kill)
-            if (dist <= catchDistance)
-            {
-                EnsureRespawnRef();
-                if (!isAttacking)
+            case State.Patrol:
+                // patrol behaviour (may flip internally)
+                PatrolBehaviour();
+                if (dist <= detectionRadius && (!requireLineOfSight || HasLineOfSight()))
                 {
-                    StartCoroutine(AttackThenKill());
+                    state = State.Chase;
                 }
-            }
+                break;
+
+            case State.Chase:
+                // if player too far, transition to return state
+                if (dist > detectionRadius * loseFactor)
+                {
+                    state = State.ReturnToSpawn;
+                    break;
+                }
+                // if LOS required and lost, give up chase
+                if (requireLineOfSight && !HasLineOfSight())
+                {
+                    state = State.ReturnToSpawn;
+                    break;
+                }
+
+                // move towards player horizontally but avoid edges/obstacles
+                Vector2 dir = (player.position - transform.position);
+                float dirSign = Mathf.Sign(dir.x);
+                // if there is no ground ahead in the chase direction, stop rather than fall
+                if (!IsGroundAhead(dirSign))
+                {
+                    Move(Vector2.zero);
+                }
+                else
+                {
+                    Move(new Vector2(dirSign * chaseSpeed, 0f));
+                    FlipTowards(player.position.x);
+                }
+
+                // if close enough, perform attack (then kill)
+                if (dist <= catchDistance)
+                {
+                    if (!isAttacking)
+                    {
+                        state = State.Attack;
+                        StartCoroutine(AttackThenKill());
+                    }
+                }
+                break;
+
+            case State.ReturnToSpawn:
+                // move back to spawn and resume patrol or idle
+                Vector2 toSpawn = (spawnPosition - transform.position);
+                if (toSpawn.magnitude <= returnTolerance)
+                {
+                    state = patrolWhenIdle ? State.Patrol : State.Idle;
+                    break;
+                }
+                float rsSign = Mathf.Sign(toSpawn.x);
+                // avoid walking off edges when returning
+                if (!IsGroundAhead(rsSign))
+                {
+                    Move(Vector2.zero);
+                }
+                else
+                {
+                    Move(new Vector2(rsSign * chaseSpeed, 0f));
+                    FlipTowards(spawnPosition.x);
+                }
+                break;
+
+            case State.Attack:
+                // during attack we don't move; AttackThenKill coroutine handles the rest
+                Move(Vector2.zero);
+                break;
         }
     }
 
@@ -131,6 +195,15 @@ public class Homeless_script : MonoBehaviour
 
     private void Move(Vector2 velocity)
     {
+        // don't move while attacking
+        if (isAttacking)
+        {
+            if (rb != null)
+            {
+                rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
+            }
+            return;
+        }
         // check obstacle ahead before moving
         float dirSign = Mathf.Sign(velocity.x);
         if (Mathf.Abs(velocity.x) > 0.01f)
@@ -138,7 +211,7 @@ public class Homeless_script : MonoBehaviour
             if (IsObstacleAhead(dirSign))
             {
                 // if patrolling, reverse direction; if chasing, stop
-                if (!chasing)
+                if (state == State.Patrol)
                 {
                     patrolDir = -patrolDir;
                 }
@@ -149,7 +222,10 @@ public class Homeless_script : MonoBehaviour
 
         if (rb != null)
         {
-            rb.linearVelocity = new Vector2(velocity.x, rb.linearVelocity.y);
+            // smooth towards target horizontal velocity
+            float targetX = velocity.x;
+            float newX = Mathf.MoveTowards(rb.linearVelocity.x, targetX, accel * Time.deltaTime);
+            rb.linearVelocity = new Vector2(newX, rb.linearVelocity.y);
             // use actual rigidbody velocity to determine running state
             float actualSpeed = Mathf.Abs(rb.linearVelocity.x);
             bool isRunning = actualSpeed > 0.01f;
@@ -179,6 +255,25 @@ public class Homeless_script : MonoBehaviour
         // cast slightly ahead at waist height
         float distance = Mathf.Max(0.1f, Mathf.Abs(dirSign) * 0.5f + 0.1f);
         RaycastHit2D hit = Physics2D.CircleCast(origin, obstacleCheckRadius, new Vector2(dirSign, 0f), distance, obstacleMask);
+        return hit.collider != null && !hit.collider.isTrigger;
+    }
+
+    private bool HasLineOfSight()
+    {
+        if (player == null) return false;
+        Vector2 dir = (player.position - transform.position).normalized;
+        float distance = Vector2.Distance(transform.position, player.position);
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, distance, lineOfSightMask);
+        if (hit.collider == null) return true;
+        return hit.collider.CompareTag("Player");
+    }
+
+    private bool IsGroundAhead(float dirSign)
+    {
+        if (Mathf.Approximately(dirSign, 0f)) return true;
+        float forward = 0.5f + obstacleCheckRadius;
+        Vector2 origin = (Vector2)transform.position + new Vector2(dirSign * forward, 0f);
+        RaycastHit2D hit = Physics2D.Raycast(origin, Vector2.down, groundCheckDistance, groundMask);
         return hit.collider != null && !hit.collider.isTrigger;
     }
 
@@ -228,6 +323,10 @@ public class Homeless_script : MonoBehaviour
         yield return new WaitForSeconds(delay);
         EnsureRespawnRef();
         respawnManager?.KillPlayer();
+        // clear cached player reference so we pick up the respawned player
+        player = null;
+        // return to idle/patrol so the enemy can detect the player again
+        state = patrolWhenIdle ? State.Patrol : State.Idle;
         isAttacking = false;
     }
 
