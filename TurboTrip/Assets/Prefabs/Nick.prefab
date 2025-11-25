@@ -5298,8 +5298,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   audioSource: {fileID: 4482095120570881337}
-  jumpSFX: {fileID: 8300000, guid: 036d3d7143c05e64dba49ab9050b9b2b, type: 3}
-  doubleJumpSFX: {fileID: 8300000, guid: 036d3d7143c05e64dba49ab9050b9b2b, type: 3}
+  jumpSFX: {fileID: 8300000, guid: 4d84346246aba964ca17d19e32795a60, type: 3}
+  doubleJumpSFX: {fileID: 8300000, guid: 4d84346246aba964ca17d19e32795a60, type: 3}
   dashSFX: {fileID: 8300000, guid: c2b376a849094264186487a93db38fc2, type: 3}
   wallhitSFX: {fileID: 8300000, guid: d5457ffdfd313104b8ddab9b31a310a4, type: 3}
   volume: 1

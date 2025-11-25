@@ -66,10 +66,13 @@ public class Movement2D : MonoBehaviour
         // Flip + anim b�sica
         if (input)
         {
+            bool grounded = groundCheck && groundCheck.grounded;
+
             if (input.moveAxis < 0f) transform.localScale = new Vector3(-1f, 1f, 1f);
             else if (input.moveAxis > 0f) transform.localScale = new Vector3(1f, 1f, 1f);
 
-            if (animator) animator.SetBool("Running", Mathf.Abs(input.moveAxis) > 0.01f);
+            if (animator)
+               animator.SetBool("Running", grounded && (Mathf.Abs(input.moveAxis) > 0.01f));
         }
     if (animator && groundCheck && !suppressJumping) animator.SetBool("Jumping", !groundCheck.grounded);
 
