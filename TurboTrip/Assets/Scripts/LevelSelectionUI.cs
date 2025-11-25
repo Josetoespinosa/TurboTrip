@@ -18,6 +18,14 @@ public class LevelSelectionUI : MonoBehaviour
     [Tooltip("Description text for the world")]
     public TextMeshProUGUI worldDescriptionText;
 
+    [Header("Button Settings")]
+    [Tooltip("Image/sprite to use for all level buttons")]
+    public Sprite buttonImage;
+    [Tooltip("Width of all level buttons in pixels")]
+    public float buttonWidth = 300f;
+    [Tooltip("Height of all level buttons in pixels")]
+    public float buttonHeight = 100f;
+
     [Header("Navigation")]
     [Tooltip("Name of the world selection scene to return to")]
     public string worldSelectionSceneName = "WorldSelection";
@@ -89,18 +97,23 @@ public class LevelSelectionUI : MonoBehaviour
         }
         
         // Ensure container has a layout component to arrange buttons properly (same as WorldSelectionUI)
-        if (levelButtonContainer.GetComponent<VerticalLayoutGroup>() == null && 
-            levelButtonContainer.GetComponent<HorizontalLayoutGroup>() == null &&
+        VerticalLayoutGroup layoutGroup = levelButtonContainer.GetComponent<VerticalLayoutGroup>();
+        if (layoutGroup == null && levelButtonContainer.GetComponent<HorizontalLayoutGroup>() == null &&
             levelButtonContainer.GetComponent<GridLayoutGroup>() == null)
         {
-            var layoutGroup = levelButtonContainer.gameObject.AddComponent<VerticalLayoutGroup>();
+            layoutGroup = levelButtonContainer.gameObject.AddComponent<VerticalLayoutGroup>();
+            Debug.Log("Added VerticalLayoutGroup to level button container");
+        }
+        
+        // Configure layout group to not control button sizes
+        if (layoutGroup != null)
+        {
             layoutGroup.spacing = 20f;
             layoutGroup.childAlignment = TextAnchor.UpperCenter;
-            layoutGroup.childControlWidth = true;
+            layoutGroup.childControlWidth = false;
             layoutGroup.childControlHeight = false;
-            layoutGroup.childForceExpandWidth = true;
+            layoutGroup.childForceExpandWidth = false;
             layoutGroup.childForceExpandHeight = false;
-            Debug.Log("Added VerticalLayoutGroup to level button container");
         }
         
         // Clear existing buttons
@@ -129,7 +142,7 @@ public class LevelSelectionUI : MonoBehaviour
                 bool isCompleted = progressManager.IsLevelCompleted(level);
                 float bestTime = progressManager.GetBestTime(level);
                 
-                levelButton.Setup(level, isUnlocked, isCompleted, bestTime, () => OnLevelSelected(level));
+                levelButton.Setup(level, isUnlocked, isCompleted, bestTime, () => OnLevelSelected(level), buttonImage, buttonWidth, buttonHeight);
             }
             else
             {

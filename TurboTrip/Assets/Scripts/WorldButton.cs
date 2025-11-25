@@ -27,28 +27,63 @@ public class WorldButton : MonoBehaviour
         button = GetComponent<Button>();
     }
     
-    public void Setup(WorldData data, bool isUnlocked, Action onClick)
+    public void Setup(WorldData data, bool isUnlocked, Action onClick, Sprite buttonSprite = null, float width = 300f, float height = 100f)
     {
         worldData = data;
         onClickCallback = onClick;
         
         Debug.Log($"Setting up WorldButton for {data.worldName}, unlocked: {isUnlocked}");
         
+        // Set button dimensions
+        RectTransform rectTransform = GetComponent<RectTransform>();
+        if (rectTransform != null)
+        {
+            rectTransform.sizeDelta = new Vector2(width, height);
+        }
+        
+        // Add LayoutElement to enforce custom size (prevents layout group from overriding)
+        LayoutElement layoutElement = GetComponent<LayoutElement>();
+        if (layoutElement == null)
+        {
+            layoutElement = gameObject.AddComponent<LayoutElement>();
+        }
+        layoutElement.preferredWidth = width;
+        layoutElement.preferredHeight = height;
+        
+        // Set button image
+        if (buttonSprite != null)
+        {
+            Image buttonImage = GetComponent<Image>();
+            if (buttonImage != null)
+            {
+                buttonImage.sprite = buttonSprite;
+            }
+        }
+        
         // Set world info
         if (worldNameText != null)
+        {
             worldNameText.text = data.worldName;
+            worldNameText.color = Color.white;
+        }
         else
         {
             // Fallback: try to find button's text component
             var buttonText = GetComponentInChildren<TextMeshProUGUI>();
             if (buttonText != null)
+            {
                 buttonText.text = data.worldName;
+                buttonText.color = Color.white;
+            }
             else
                 Debug.LogWarning($"worldNameText is null on {gameObject.name}");
         }
         
         if (worldDescriptionText != null)
+        {
             worldDescriptionText.text = data.description;
+            worldDescriptionText.color = Color.white;
+        }
         
         if (worldIconImage != null && data.worldIcon != null)
         {

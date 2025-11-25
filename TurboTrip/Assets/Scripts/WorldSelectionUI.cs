@@ -17,6 +17,14 @@ public class WorldSelectionUI : MonoBehaviour
     [Tooltip("Optional: Title text to display")]
     public TextMeshProUGUI titleText;
     
+    [Header("Button Settings")]
+    [Tooltip("Image/sprite to use for all world buttons")]
+    public Sprite buttonImage;
+    [Tooltip("Width of all world buttons in pixels")]
+    public float buttonWidth = 300f;
+    [Tooltip("Height of all world buttons in pixels")]
+    public float buttonHeight = 100f;
+    
     [Header("Navigation")]
     [Tooltip("Name of the level selection scene")]
     public string levelSelectionSceneName = "LevelSelection";
@@ -66,18 +74,23 @@ public class WorldSelectionUI : MonoBehaviour
         }
         
         // Ensure container has a layout component to arrange buttons properly
-        if (worldButtonContainer.GetComponent<VerticalLayoutGroup>() == null && 
-            worldButtonContainer.GetComponent<HorizontalLayoutGroup>() == null &&
+        VerticalLayoutGroup layoutGroup = worldButtonContainer.GetComponent<VerticalLayoutGroup>();
+        if (layoutGroup == null && worldButtonContainer.GetComponent<HorizontalLayoutGroup>() == null &&
             worldButtonContainer.GetComponent<GridLayoutGroup>() == null)
         {
-            var layoutGroup = worldButtonContainer.gameObject.AddComponent<VerticalLayoutGroup>();
+            layoutGroup = worldButtonContainer.gameObject.AddComponent<VerticalLayoutGroup>();
+            Debug.Log("Added VerticalLayoutGroup to button container");
+        }
+        
+        // Configure layout group to not control button sizes
+        if (layoutGroup != null)
+        {
             layoutGroup.spacing = 20f;
             layoutGroup.childAlignment = TextAnchor.UpperCenter;
-            layoutGroup.childControlWidth = true;
+            layoutGroup.childControlWidth = false;
             layoutGroup.childControlHeight = false;
-            layoutGroup.childForceExpandWidth = true;
+            layoutGroup.childForceExpandWidth = false;
             layoutGroup.childForceExpandHeight = false;
-            Debug.Log("Added VerticalLayoutGroup to button container");
         }
         
         Debug.Log($"Generating buttons in container: {worldButtonContainer.name}");
@@ -93,6 +106,8 @@ public class WorldSelectionUI : MonoBehaviour
             Debug.LogError("GameProgressManager has no worlds assigned! Assign WorldData assets to the allWorlds array.");
             return;
         }
+        
+        Debug.Log($"Total worlds to generate buttons for: {progressManager.allWorlds.Length}");
         
         // Create button for each world
         int buttonCount = 0;
@@ -113,7 +128,7 @@ public class WorldSelectionUI : MonoBehaviour
             {
                 bool isUnlocked = progressManager.IsWorldUnlocked(world);
                 Debug.Log($"World {world.worldName} is {(isUnlocked ? "UNLOCKED" : "LOCKED")}");
-                worldButton.Setup(world, isUnlocked, () => OnWorldSelected(world));
+                worldButton.Setup(world, isUnlocked, () => OnWorldSelected(world), buttonImage, buttonWidth, buttonHeight);
                 buttonCount++;
             }
             else

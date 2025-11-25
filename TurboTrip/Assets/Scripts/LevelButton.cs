@@ -29,24 +29,59 @@ public class LevelButton : MonoBehaviour
         button = GetComponent<Button>();
     }
     
-    public void Setup(LevelData data, bool isUnlocked, bool isCompleted, float bestTime, Action onClick)
+    public void Setup(LevelData data, bool isUnlocked, bool isCompleted, float bestTime, Action onClick, Sprite buttonSprite = null, float width = 300f, float height = 100f)
     {
         levelData = data;
         onClickCallback = onClick;
         
+        // Set button dimensions
+        RectTransform rectTransform = GetComponent<RectTransform>();
+        if (rectTransform != null)
+        {
+            rectTransform.sizeDelta = new Vector2(width, height);
+        }
+        
+        // Add LayoutElement to enforce custom size (prevents layout group from overriding)
+        LayoutElement layoutElement = GetComponent<LayoutElement>();
+        if (layoutElement == null)
+        {
+            layoutElement = gameObject.AddComponent<LayoutElement>();
+        }
+        layoutElement.preferredWidth = width;
+        layoutElement.preferredHeight = height;
+        
+        // Set button image
+        if (buttonSprite != null)
+        {
+            Image buttonImage = GetComponent<Image>();
+            if (buttonImage != null)
+            {
+                buttonImage.sprite = buttonSprite;
+            }
+        }
+        
         // Set level info
         if (levelNameText != null)
+        {
             levelNameText.text = data.levelName;
+            levelNameText.color = Color.white;
+        }
         else
         {
             // Fallback: try to find button's text component
             var buttonText = GetComponentInChildren<TextMeshProUGUI>();
             if (buttonText != null)
+            {
                 buttonText.text = data.levelName;
+                buttonText.color = Color.white;
+            }
         }
         
         if (levelNumberText != null)
+        {
             levelNumberText.text = $"Level {data.levelNumber}";
+            levelNumberText.color = Color.white;
+        }
         
         if (levelIconImage != null && data.levelIcon != null)
         {
@@ -69,6 +104,7 @@ public class LevelButton : MonoBehaviour
             if (bestTime > 0f)
             {
                 bestTimeText.text = $"Best: {FormatTime(bestTime)}";
+                bestTimeText.color = Color.white;
                 bestTimeText.gameObject.SetActive(true);
             }
             else
