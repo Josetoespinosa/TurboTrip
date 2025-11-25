@@ -2,10 +2,14 @@
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(Collider2D))]
-public class HorizontalSawHazard : MonoBehaviour
+public class SawHazard : MonoBehaviour
 {
-    [Header("Movimiento horizontal")]
-    [Tooltip("Distancia que se moverá hacia la derecha e izquierda desde la posición inicial.")]
+    public enum MoveDirection { Horizontal, Vertical }
+
+    [Header("Configuración")]
+    public MoveDirection direction = MoveDirection.Horizontal;
+
+    [Tooltip("Distancia que se moverá desde la posición inicial.")]
     public float range = 3f;
 
     [Tooltip("Velocidad de movimiento de la sierra.")]
@@ -14,44 +18,56 @@ public class HorizontalSawHazard : MonoBehaviour
     private Rigidbody2D rb;
     private Collider2D col;
 
-    private float startX;
-    private float targetX;
+    private Vector2 startPos;
+    private Vector2 targetPos;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         col = GetComponent<Collider2D>();
 
-        // Configuración de físicas para hazard tipo trigger
         rb.gravityScale = 0f;
         rb.freezeRotation = true;
         rb.bodyType = RigidbodyType2D.Kinematic;
 
-        // Queremos detección sin colisión física → usar Trigger
         col.isTrigger = true;
 
-        // Guardamos la posición inicial y definimos primer objetivo (a la derecha)
-        startX = transform.position.x;
-        targetX = startX + range;
+        startPos = rb.position;
+
+        // Primer objetivo
+        if (direction == MoveDirection.Horizontal)
+            targetPos = startPos + new Vector2(range, 0f);
+        else
+            targetPos = startPos + new Vector2(0f, range);
     }
 
     private void FixedUpdate()
     {
         Vector2 pos = rb.position;
-        float newX = Mathf.MoveTowards(pos.x, targetX, speed * Time.fixedDeltaTime);
-        rb.MovePosition(new Vector2(newX, pos.y));
 
-        // Cuando llega (o casi) al objetivo, invertimos la dirección
-        if (Mathf.Abs(newX - targetX) <= 0.01f)
+        // Mover hacia target
+        Vector2 newPos = Vector2.MoveTowards(pos, targetPos, speed * Time.fixedDeltaTime);
+        rb.MovePosition(newPos);
+
+        // Invertir objetivo cuando llega
+        if (Vector2.Distance(newPos, targetPos) <= 0.01f)
         {
-            // Si estaba yendo a startX + range, ahora va a startX - range, y viceversa
-            float rightX = startX + range;
-            float leftX = startX - range;
-
-            if (Mathf.Abs(targetX - rightX) <= 0.01f)
-                targetX = leftX;
+            if (direction == MoveDirection.Horizontal)
+            {
+                float right = startPos.x + range;
+                float left = startPos.x - range;
+                targetPos = Mathf.Abs(targetPos.x - right) < 0.01f
+                    ? new Vector2(left, startPos.y)
+                    : new Vector2(right, startPos.y);
+            }
             else
-                targetX = rightX;
+            {
+                float up = startPos.y + range;
+                float down = startPos.y - range;
+                targetPos = Mathf.Abs(targetPos.y - up) < 0.01f
+                    ? new Vector2(startPos.x, down)
+                    : new Vector2(startPos.x, up);
+            }
         }
     }
 
@@ -59,14 +75,23 @@ public class HorizontalSawHazard : MonoBehaviour
     {
         Gizmos.color = Color.green;
 
-        float x = Application.isPlaying ? startX : transform.position.x;
-        float y = transform.position.y;
+        Vector2 center = Application.isPlaying ? startPos : transform.position;
 
-        Vector3 left = new Vector3(x - range, y, 0f);
-        Vector3 right = new Vector3(x + range, y, 0f);
+        Vector3 a, b;
 
-        Gizmos.DrawLine(left, right);
-        Gizmos.DrawSphere(left, 0.05f);
-        Gizmos.DrawSphere(right, 0.05f);
+        if (direction == MoveDirection.Horizontal)
+        {
+            a = new Vector3(center.x - range, center.y, 0f);
+            b = new Vector3(center.x + range, center.y, 0f);
+        }
+        else
+        {
+            a = new Vector3(center.x, center.y - range, 0f);
+            b = new Vector3(center.x, center.y + range, 0f);
+        }
+
+        Gizmos.DrawLine(a, b);
+        Gizmos.DrawSphere(a, 0.05f);
+        Gizmos.DrawSphere(b, 0.05f);
     }
 }

@@ -5227,7 +5227,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   JumpImpulse: 4
   JumpHoldForce: 6
-  MaxJumpHoldTime: 0.75
+  MaxJumpHoldTime: 0.5
   DashJumpWindow: 1
   DashHoldFactor: 0.5
   doubleJumpFx: {fileID: 7964647444086023518}
