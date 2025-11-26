@@ -599,7 +599,7 @@ PrefabInstance:
     - target: {fileID: 8465002027608285191, guid: 8f417c5a73a22da4586de6e62c81d9b4, type: 3}
       propertyPath: pauseMenuPanel
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1114066061}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1194,6 +1194,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1114066061 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4705400552105901417, guid: 7af3d036dc83e6345939c42f35a1f941, type: 3}
+  m_PrefabInstance: {fileID: 1666410673}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1121401358
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1626,11 +1631,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6088457546301386417, guid: 7af3d036dc83e6345939c42f35a1f941, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -911.73755
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6088457546301386417, guid: 7af3d036dc83e6345939c42f35a1f941, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -435.39078
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6088457546301386417, guid: 7af3d036dc83e6345939c42f35a1f941, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
