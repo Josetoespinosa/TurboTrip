@@ -313,10 +313,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45a44ff69cd7f4bb693cd083683425d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeText: {fileID: 0}
-  continueButton: {fileID: 0}
-  retryButton: {fileID: 0}
-  menuButton: {fileID: 0}
+  timeText: {fileID: 553686502}
+  continueButton: {fileID: 1072101927}
+  retryButton: {fileID: 1927716331}
+  menuButton: {fileID: 922517391}
 --- !u!1 &553686499
 GameObject:
   m_ObjectHideFlags: 0
