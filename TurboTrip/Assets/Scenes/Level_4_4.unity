@@ -1809,6 +1809,30 @@ PrefabInstance:
       propertyPath: m_Name
       value: NPC
       objectReference: {fileID: 0}
+    - target: {fileID: 3252585182860019170, guid: a9684e8dda9e4dd42b8a7878d52769a3, type: 3}
+      propertyPath: dialoguePanel
+      value: 
+      objectReference: {fileID: 530525479}
+    - target: {fileID: 3252585182860019170, guid: a9684e8dda9e4dd42b8a7878d52769a3, type: 3}
+      propertyPath: interactPanel
+      value: 
+      objectReference: {fileID: 530525477}
+    - target: {fileID: 3252585182860019170, guid: a9684e8dda9e4dd42b8a7878d52769a3, type: 3}
+      propertyPath: dialogueUIText
+      value: 
+      objectReference: {fileID: 530525478}
+    - target: {fileID: 3252585182860019170, guid: a9684e8dda9e4dd42b8a7878d52769a3, type: 3}
+      propertyPath: 'lines.Array.data[0]'
+      value: Hola Nick, creo que esta es la ultima vez que nos vamos a ver....
+      objectReference: {fileID: 0}
+    - target: {fileID: 3252585182860019170, guid: a9684e8dda9e4dd42b8a7878d52769a3, type: 3}
+      propertyPath: 'lines.Array.data[1]'
+      value: "\xBFMe preguntas porque? Las drogas ya ni te dejan pensar bien."
+      objectReference: {fileID: 0}
+    - target: {fileID: 3252585182860019170, guid: a9684e8dda9e4dd42b8a7878d52769a3, type: 3}
+      propertyPath: 'lines.Array.data[2]'
+      value: Buen Viaje.
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1917,6 +1941,27 @@ PrefabInstance:
 --- !u!224 &530525476 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1832521530627794121, guid: 2a0a283b0b62147c48cb1b074c4a8f39, type: 3}
+  m_PrefabInstance: {fileID: 530525475}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &530525477 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4928511693022105400, guid: 2a0a283b0b62147c48cb1b074c4a8f39, type: 3}
+  m_PrefabInstance: {fileID: 530525475}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &530525478 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2490259461543606968, guid: 2a0a283b0b62147c48cb1b074c4a8f39, type: 3}
+  m_PrefabInstance: {fileID: 530525475}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1 &530525479 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8818566283258460404, guid: 2a0a283b0b62147c48cb1b074c4a8f39, type: 3}
   m_PrefabInstance: {fileID: 530525475}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &541056574
