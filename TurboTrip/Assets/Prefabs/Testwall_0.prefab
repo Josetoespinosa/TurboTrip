@@ -79,7 +79,7 @@ SpriteRenderer:
   m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: 150570921017001918, guid: 4a090bfc546fb6f40a9cedf191624f77, type: 3}
-  m_Color: {r: 0.735849, g: 0.735849, b: 0.735849, a: 1}
+  m_Color: {r: 0.050815158, g: 0.690566, b: 0.050815158, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -149,3 +149,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TilemapCollider: {fileID: 0}
   wallSprite: {fileID: 2342393995508767699}
+  Portal1: {fileID: 713387302637722434, guid: 4ef3491f3ace3b942a1a9d4929ffa7fd, type: 3}
+  Portal2: {fileID: 713387302637722434, guid: 4ef3491f3ace3b942a1a9d4929ffa7fd, type: 3}
