@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   levelName: Level 2
   description: Level 2 World 3
-  levelNumber: 6
+  levelNumber: 12
   sceneName: Level_3_2
   unlockedByDefault: 1
   levelIcon: {fileID: 0}

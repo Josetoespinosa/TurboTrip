@@ -8301,6 +8301,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PauseMenuPanel
       objectReference: {fileID: 0}
+    - target: {fileID: 4705400552105901417, guid: 7af3d036dc83e6345939c42f35a1f941, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6088457546301386417, guid: 7af3d036dc83e6345939c42f35a1f941, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -9821,11 +9825,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1888746948906945392, guid: 8f417c5a73a22da4586de6e62c81d9b4, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1342.815
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1888746948906945392, guid: 8f417c5a73a22da4586de6e62c81d9b4, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 588.371
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1888746948906945392, guid: 8f417c5a73a22da4586de6e62c81d9b4, type: 3}
       propertyPath: m_LocalPosition.z
