@@ -1,10 +1,12 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class WallPassTrigger : MonoBehaviour
 {
     public Collider2D TilemapCollider;
     public SpriteRenderer wallSprite;
+    public SpriteRenderer Portal1;
+    public SpriteRenderer Portal2;
 
     private const string PlayerTag = "Player";
     private bool inside = false;
@@ -27,7 +29,9 @@ public class WallPassTrigger : MonoBehaviour
     {
         if (!other.CompareTag(PlayerTag)) return;
 
-        wallSprite.sortingOrder = 51;
+        Portal1.sortingOrder = 51;
+        Portal2.sortingOrder = 51;
+        wallSprite.sortingOrder = 50;
         inside = true;
 
         var go = other.gameObject;
@@ -53,6 +57,8 @@ public class WallPassTrigger : MonoBehaviour
         if (!other.CompareTag(PlayerTag)) return;
 
         wallSprite.sortingOrder = 0;
+        Portal1.sortingOrder = -2;
+        Portal2.sortingOrder = -2;
         inside = false;
         IgnoreCollision(false);
 
