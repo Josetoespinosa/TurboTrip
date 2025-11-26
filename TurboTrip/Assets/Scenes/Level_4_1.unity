@@ -239,7 +239,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 2
+  orthographic size: 2.5
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -777,6 +777,11 @@ PrefabInstance:
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2989177675984595804, guid: 6076affa81b4347c6a7cb1cc53c439e8, type: 3}
   m_PrefabInstance: {fileID: 94069568}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &598082687 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8818566283258460404, guid: 2a0a283b0b62147c48cb1b074c4a8f39, type: 3}
+  m_PrefabInstance: {fileID: 1145928666}
   m_PrefabAsset: {fileID: 0}
 --- !u!212 &624406889 stripped
 SpriteRenderer:
@@ -24179,6 +24184,11 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
+--- !u!1 &700762725 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4928511693022105400, guid: 2a0a283b0b62147c48cb1b074c4a8f39, type: 3}
+  m_PrefabInstance: {fileID: 1145928666}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &727270117
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -24824,6 +24834,17 @@ Transform:
   m_Children: []
   m_Father: {fileID: 256321313}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1225183393 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2490259461543606968, guid: 2a0a283b0b62147c48cb1b074c4a8f39, type: 3}
+  m_PrefabInstance: {fileID: 1145928666}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1247632581
 GameObject:
   m_ObjectHideFlags: 0
@@ -25247,6 +25268,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: NPC (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 3252585182860019170, guid: a9684e8dda9e4dd42b8a7878d52769a3, type: 3}
+      propertyPath: dialoguePanel
+      value: 
+      objectReference: {fileID: 598082687}
+    - target: {fileID: 3252585182860019170, guid: a9684e8dda9e4dd42b8a7878d52769a3, type: 3}
+      propertyPath: interactPanel
+      value: 
+      objectReference: {fileID: 700762725}
+    - target: {fileID: 3252585182860019170, guid: a9684e8dda9e4dd42b8a7878d52769a3, type: 3}
+      propertyPath: dialogueUIText
+      value: 
+      objectReference: {fileID: 1225183393}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -25392,6 +25425,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: World3NPC(wall)
       objectReference: {fileID: 0}
+    - target: {fileID: 4225611742285144291, guid: d1cf70f9ef77d8f48986839722d66d6c, type: 3}
+      propertyPath: dialoguePanel
+      value: 
+      objectReference: {fileID: 598082687}
+    - target: {fileID: 4225611742285144291, guid: d1cf70f9ef77d8f48986839722d66d6c, type: 3}
+      propertyPath: interactPanel
+      value: 
+      objectReference: {fileID: 700762725}
+    - target: {fileID: 4225611742285144291, guid: d1cf70f9ef77d8f48986839722d66d6c, type: 3}
+      propertyPath: dialogueUIText
+      value: 
+      objectReference: {fileID: 1225183393}
     - target: {fileID: 4225611742285144291, guid: d1cf70f9ef77d8f48986839722d66d6c, type: 3}
       propertyPath: unlockAbilityOnFinish
       value: 0
