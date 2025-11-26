@@ -30,27 +30,19 @@ public class PauseManager : MonoBehaviour
 
     void Awake()
     {
-        isPaused = false;
-        Time.timeScale = 1f;
-        isInitialized = false;
-
-        if (pauseMenuPanel != null)
+        // SOLO ocultar el panel cuando está ejecutándose el juego
+        if (Application.isPlaying)
         {
-            pauseMenuPanel.SetActive(false);
+            isPaused = false;
+            Time.timeScale = 1f;
+            isInitialized = false;
 
-            Canvas canvas = pauseMenuPanel.GetComponentInParent<Canvas>();
-            if (canvas != null)
-            {
-                RectTransform canvasRect = canvas.GetComponent<RectTransform>();
-                if (canvasRect != null)
-                {
-                    Vector3 pos = canvasRect.localPosition;
-                    pos.z = 0f;
-                    canvasRect.localPosition = pos;
-                }
-            }
+            if (pauseMenuPanel != null)
+                pauseMenuPanel.SetActive(false);
         }
     }
+
+
 
     void Start()
     {
@@ -61,7 +53,7 @@ public class PauseManager : MonoBehaviour
             eventSystem.AddComponent<UnityEngine.InputSystem.UI.InputSystemUIInputModule>();
         }
 
-        if (pauseMenuPanel != null)
+        if (Application.isPlaying && pauseMenuPanel != null)
             pauseMenuPanel.SetActive(false);
 
         if (resumeButton != null)
@@ -83,6 +75,12 @@ public class PauseManager : MonoBehaviour
         }
 
         Invoke(nameof(MarkInitialized), initializeDelay);
+
+#if UNITY_EDITOR
+        // En el editor NO desactives el panel
+        if (!Application.isPlaying && pauseMenuPanel != null)
+            pauseMenuPanel.SetActive(true);
+#endif
     }
 
     void MarkInitialized()
