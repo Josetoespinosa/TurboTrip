@@ -16,7 +16,7 @@ MonoBehaviour:
   description: Level 3 World 1
   levelNumber: 3
   sceneName: Level_1_3
-  unlockedByDefault: 0
+  unlockedByDefault: 1
   levelIcon: {fileID: 0}
   levelColor: {r: 1, g: 1, b: 1, a: 1}
   targetTime: 60
