@@ -20,7 +20,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 934902db7adb73c44a17bf600d456b31, type: 2}
   - {fileID: 11400000, guid: c183c2b2492e9d3459bce0cfd5b43222, type: 2}
   - {fileID: 11400000, guid: 1ed3b09f5562b7745a378e9c35095c41, type: 2}
-  - {fileID: 11400000, guid: 072aebf46dcb3334c8e1546a92169636, type: 2}
   unlockedByDefault: 1
   worldIcon: {fileID: 0}
   worldColor: {r: 0, g: 1, b: 1, a: 1}

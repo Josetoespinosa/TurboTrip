@@ -41,14 +41,12 @@ public class GameProgressManager : MonoBehaviour
     public bool IsWorldUnlocked(WorldData world)
     {
         if (world == null) return false;
-        // Ignore unlockedByDefault flag - enforce progression system
         return unlockedWorlds.Contains(world.worldName);
     }
     
     public bool IsLevelUnlocked(LevelData level)
     {
         if (level == null) return false;
-        // Ignore unlockedByDefault flag - enforce progression system
         return unlockedLevels.Contains(GetLevelKey(level));
     }
     
@@ -68,7 +66,13 @@ public class GameProgressManager : MonoBehaviour
     
     public void CompleteLevel(LevelData level, float time)
     {
-        if (level == null) return;
+        if (level == null)
+        {
+            Debug.LogError("CompleteLevel called with null level!");
+            return;
+        }
+        
+        Debug.Log($"CompleteLevel called for: {level.levelName} ({level.name})");
         
         string key = GetLevelKey(level);
         levelCompleted[key] = true;
@@ -100,6 +104,8 @@ public class GameProgressManager : MonoBehaviour
     
     private void UnlockNextLevel(LevelData completedLevel)
     {
+        Debug.Log($"UnlockNextLevel called for: {completedLevel.levelName}");
+        
         // Find the world containing this level
         foreach (var world in allWorlds)
         {
@@ -109,6 +115,8 @@ public class GameProgressManager : MonoBehaviour
             {
                 if (world.levels[i] == completedLevel)
                 {
+                    Debug.Log($"Found level at index {i} in world {world.worldName} (total levels: {world.levels.Length})");
+                    
                     // If there's a next level in this world, unlock it
                     if (i + 1 < world.levels.Length)
                     {
@@ -117,25 +125,35 @@ public class GameProgressManager : MonoBehaviour
                     }
                     else
                     {
+                        Debug.Log($"This is the LAST level of {world.worldName}!");
+                        
                         // This was the last level in the world, unlock next world
                         int worldIndex = System.Array.IndexOf(allWorlds, world);
+                        Debug.Log($"World index: {worldIndex}, Total worlds: {allWorlds.Length}");
+                        
                         if (worldIndex >= 0 && worldIndex + 1 < allWorlds.Length)
                         {
                             UnlockWorld(allWorlds[worldIndex + 1]);
-                            Debug.Log($"Unlocked next world: {allWorlds[worldIndex + 1].worldName}");
+                            Debug.Log($"✓ Unlocked next world: {allWorlds[worldIndex + 1].worldName}");
                             
                             // Also unlock the first level of the next world
                             if (allWorlds[worldIndex + 1].levels != null && allWorlds[worldIndex + 1].levels.Length > 0)
                             {
                                 UnlockLevel(allWorlds[worldIndex + 1].levels[0]);
-                                Debug.Log($"Unlocked first level of next world: {allWorlds[worldIndex + 1].levels[0].levelName}");
+                                Debug.Log($"✓ Unlocked first level of next world: {allWorlds[worldIndex + 1].levels[0].levelName}");
                             }
+                        }
+                        else
+                        {
+                            Debug.Log("No next world available - this is the last world!");
                         }
                     }
                     return;
                 }
             }
         }
+        
+        Debug.LogError($"Could not find level {completedLevel.levelName} in any world! Make sure it's assigned in GameProgressManager.allWorlds[]");
     }
     
     #endregion
@@ -351,9 +369,9 @@ public class GameProgressManager : MonoBehaviour
         PlayerPrefs.DeleteAll();
         PlayerPrefs.Save();
         
-        // Reinitialize with only World 1, Level 1
+        // Reinitialize with first level only
         InitializeFirstTimeProgress();
-        Debug.Log("Progress reset complete - only World 1, Level 1 is unlocked");
+        Debug.Log("Progress reset complete - only World 1 Level 1 is now unlocked");
     }
     
     #endregion

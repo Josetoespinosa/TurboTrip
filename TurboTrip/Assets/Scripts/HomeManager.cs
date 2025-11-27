@@ -11,7 +11,6 @@ public class HomeManager : MonoBehaviour
     [Header("Buttons")]
     public Button playButton;
     public Button exitButton;
-    public Button resetProgressButton; // Optional: for testing
     
     [Header("Settings")]
     public string worldSelectionSceneName = "WorldSelection";
@@ -27,12 +26,6 @@ public class HomeManager : MonoBehaviour
         if (exitButton != null)
         {
             exitButton.onClick.AddListener(OnExitClicked);
-        }
-        
-        // Optional: Reset Progress button for testing
-        if (resetProgressButton != null)
-        {
-            resetProgressButton.onClick.AddListener(OnResetProgressClicked);
         }
         
         // Ensure GameProgressManager exists
@@ -59,15 +52,5 @@ public class HomeManager : MonoBehaviour
         #else
         Application.Quit();
         #endif
-    }
-    
-    void OnResetProgressClicked()
-    {
-        Debug.Log("Reset Progress button clicked");
-        if (GameProgressManager.Instance != null)
-        {
-            GameProgressManager.Instance.ResetProgress();
-            Debug.Log("All progress reset! Only World 1, Level 1 is now unlocked.");
-        }
     }
 }
