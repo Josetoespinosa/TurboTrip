@@ -133,11 +133,84 @@ public class GameProgressManager : MonoBehaviour
     public void SelectWorld(WorldData world)
     {
         selectedWorld = world;
+        UnlockAbilitiesForWorld(world);
     }
     
     public void SelectLevel(LevelData level)
     {
         selectedLevel = level;
+    }
+    
+    #endregion
+    
+    #region Ability Unlocking
+    
+    /// <summary>
+    /// Sets abilities based on the world number (called when selecting a world)
+    /// World 1: Base (no abilities)
+    /// World 2: Double Jump
+    /// World 3: Dash
+    /// World 4: Wall Pass
+    /// </summary>
+    private void UnlockAbilitiesForWorld(WorldData world)
+    {
+        if (world == null) return;
+        
+        // Store which world's abilities should be active
+        PlayerPrefs.SetInt("CurrentWorldNumber", world.worldNumber);
+        PlayerPrefs.Save();
+        
+        Debug.Log($"Selected World {world.worldNumber} - abilities will be set when level loads");
+    }
+    
+    /// <summary>
+    /// Sets abilities for the current world when a level loads
+    /// Call this when the player spawns in a level
+    /// </summary>
+    public void SetAbilitiesForCurrentWorld()
+    {
+        int worldNumber = PlayerPrefs.GetInt("CurrentWorldNumber", 1);
+        
+        // Find the player's AbilitySystem
+        AbilitySystem abilitySystem = FindFirstObjectByType<AbilitySystem>();
+        if (abilitySystem == null)
+        {
+            Debug.LogWarning("GameProgressManager: No AbilitySystem found in scene");
+            return;
+        }
+        
+        // First, reset all abilities
+        abilitySystem.ResetAll();
+        
+        // Then unlock based on world number
+        switch (worldNumber)
+        {
+            case 1:
+                // World 1: Base - no abilities
+                Debug.Log("World 1: Base abilities only (no special abilities)");
+                break;
+                
+            case 2:
+                // World 2: Unlock Double Jump
+                abilitySystem.Unlock(AbilitySystem.Ability.DoubleJump);
+                Debug.Log("World 2: Double Jump unlocked!");
+                break;
+                
+            case 3:
+                // World 3: Unlock Double Jump + Dash
+                abilitySystem.Unlock(AbilitySystem.Ability.DoubleJump);
+                abilitySystem.Unlock(AbilitySystem.Ability.Dash);
+                Debug.Log("World 3: Double Jump + Dash unlocked!");
+                break;
+                
+            case 4:
+                // World 4: Unlock all abilities
+                abilitySystem.Unlock(AbilitySystem.Ability.DoubleJump);
+                abilitySystem.Unlock(AbilitySystem.Ability.Dash);
+                abilitySystem.Unlock(AbilitySystem.Ability.WallPass);
+                Debug.Log("World 4: All abilities unlocked!");
+                break;
+        }
     }
     
     #endregion

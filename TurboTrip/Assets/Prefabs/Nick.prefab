@@ -4855,6 +4855,7 @@ GameObject:
   - component: {fileID: 2508204533136367516}
   - component: {fileID: 3427932112959829173}
   - component: {fileID: 1653227174880014054}
+  - component: {fileID: -7815376161149288212}
   m_Layer: 0
   m_Name: Nick
   m_TagString: Player
@@ -5303,3 +5304,16 @@ MonoBehaviour:
   dashSFX: {fileID: 8300000, guid: c2b376a849094264186487a93db38fc2, type: 3}
   wallhitSFX: {fileID: 8300000, guid: d5457ffdfd313104b8ddab9b31a310a4, type: 3}
   volume: 1
+--- !u!114 &-7815376161149288212
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2989177675984595804}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  initDelay: 0.1
