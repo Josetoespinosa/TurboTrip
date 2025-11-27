@@ -33,6 +33,7 @@ public class GameProgressManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
         
         LoadProgress();
+        InitializeFirstTimeProgress();
     }
     
     #region Progress Management
@@ -40,14 +41,14 @@ public class GameProgressManager : MonoBehaviour
     public bool IsWorldUnlocked(WorldData world)
     {
         if (world == null) return false;
-        if (world.unlockedByDefault) return true;
+        // Ignore unlockedByDefault flag - enforce progression system
         return unlockedWorlds.Contains(world.worldName);
     }
     
     public bool IsLevelUnlocked(LevelData level)
     {
         if (level == null) return false;
-        if (level.unlockedByDefault) return true;
+        // Ignore unlockedByDefault flag - enforce progression system
         return unlockedLevels.Contains(GetLevelKey(level));
     }
     
@@ -106,18 +107,29 @@ public class GameProgressManager : MonoBehaviour
             
             for (int i = 0; i < world.levels.Length; i++)
             {
-                if (world.levels[i] == completedLevel && i + 1 < world.levels.Length)
+                if (world.levels[i] == completedLevel)
                 {
-                    // Unlock next level
-                    UnlockLevel(world.levels[i + 1]);
-                    
-                    // If this was the last level, unlock next world
-                    if (i + 1 >= world.levels.Length - 1)
+                    // If there's a next level in this world, unlock it
+                    if (i + 1 < world.levels.Length)
                     {
+                        UnlockLevel(world.levels[i + 1]);
+                        Debug.Log($"Unlocked next level: {world.levels[i + 1].levelName}");
+                    }
+                    else
+                    {
+                        // This was the last level in the world, unlock next world
                         int worldIndex = System.Array.IndexOf(allWorlds, world);
                         if (worldIndex >= 0 && worldIndex + 1 < allWorlds.Length)
                         {
                             UnlockWorld(allWorlds[worldIndex + 1]);
+                            Debug.Log($"Unlocked next world: {allWorlds[worldIndex + 1].worldName}");
+                            
+                            // Also unlock the first level of the next world
+                            if (allWorlds[worldIndex + 1].levels != null && allWorlds[worldIndex + 1].levels.Length > 0)
+                            {
+                                UnlockLevel(allWorlds[worldIndex + 1].levels[0]);
+                                Debug.Log($"Unlocked first level of next world: {allWorlds[worldIndex + 1].levels[0].levelName}");
+                            }
                         }
                     }
                     return;
@@ -292,14 +304,56 @@ public class GameProgressManager : MonoBehaviour
         }
     }
     
+    /// <summary>
+    /// Initializes progress for first-time players
+    /// Only unlocks World 1 and its first level
+    /// </summary>
+    private void InitializeFirstTimeProgress()
+    {
+        // Check if this is the first time running the game
+        if (!PlayerPrefs.HasKey("GameInitialized"))
+        {
+            Debug.Log("First time running - initializing with World 1, Level 1 only");
+            
+            // Clear any existing progress
+            unlockedWorlds.Clear();
+            unlockedLevels.Clear();
+            levelCompleted.Clear();
+            levelBestTimes.Clear();
+            
+            // Unlock World 1
+            if (allWorlds != null && allWorlds.Length > 0 && allWorlds[0] != null)
+            {
+                UnlockWorld(allWorlds[0]);
+                Debug.Log($"Unlocked {allWorlds[0].worldName}");
+                
+                // Unlock only the first level of World 1
+                if (allWorlds[0].levels != null && allWorlds[0].levels.Length > 0 && allWorlds[0].levels[0] != null)
+                {
+                    UnlockLevel(allWorlds[0].levels[0]);
+                    Debug.Log($"Unlocked {allWorlds[0].levels[0].levelName}");
+                }
+            }
+            
+            // Mark as initialized
+            PlayerPrefs.SetInt("GameInitialized", 1);
+            SaveProgress();
+        }
+    }
+    
     public void ResetProgress()
     {
+        Debug.Log("Resetting all progress...");
         unlockedWorlds.Clear();
         unlockedLevels.Clear();
         levelBestTimes.Clear();
         levelCompleted.Clear();
         PlayerPrefs.DeleteAll();
         PlayerPrefs.Save();
+        
+        // Reinitialize with only World 1, Level 1
+        InitializeFirstTimeProgress();
+        Debug.Log("Progress reset complete - only World 1, Level 1 is unlocked");
     }
     
     #endregion
