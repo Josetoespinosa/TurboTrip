@@ -1757,87 +1757,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4ef3491f3ace3b942a1a9d4929ffa7fd, type: 3}
---- !u!1001 &525683001
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 1891815400209420764, guid: a9684e8dda9e4dd42b8a7878d52769a3, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 54.47
-      objectReference: {fileID: 0}
-    - target: {fileID: 1891815400209420764, guid: a9684e8dda9e4dd42b8a7878d52769a3, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 9.85
-      objectReference: {fileID: 0}
-    - target: {fileID: 1891815400209420764, guid: a9684e8dda9e4dd42b8a7878d52769a3, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1891815400209420764, guid: a9684e8dda9e4dd42b8a7878d52769a3, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1891815400209420764, guid: a9684e8dda9e4dd42b8a7878d52769a3, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1891815400209420764, guid: a9684e8dda9e4dd42b8a7878d52769a3, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1891815400209420764, guid: a9684e8dda9e4dd42b8a7878d52769a3, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1891815400209420764, guid: a9684e8dda9e4dd42b8a7878d52769a3, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1891815400209420764, guid: a9684e8dda9e4dd42b8a7878d52769a3, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1891815400209420764, guid: a9684e8dda9e4dd42b8a7878d52769a3, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3069577553133781689, guid: a9684e8dda9e4dd42b8a7878d52769a3, type: 3}
-      propertyPath: m_Name
-      value: NPC
-      objectReference: {fileID: 0}
-    - target: {fileID: 3252585182860019170, guid: a9684e8dda9e4dd42b8a7878d52769a3, type: 3}
-      propertyPath: dialoguePanel
-      value: 
-      objectReference: {fileID: 530525479}
-    - target: {fileID: 3252585182860019170, guid: a9684e8dda9e4dd42b8a7878d52769a3, type: 3}
-      propertyPath: interactPanel
-      value: 
-      objectReference: {fileID: 530525477}
-    - target: {fileID: 3252585182860019170, guid: a9684e8dda9e4dd42b8a7878d52769a3, type: 3}
-      propertyPath: dialogueUIText
-      value: 
-      objectReference: {fileID: 530525478}
-    - target: {fileID: 3252585182860019170, guid: a9684e8dda9e4dd42b8a7878d52769a3, type: 3}
-      propertyPath: 'lines.Array.data[0]'
-      value: Hola Nick, creo que esta es la ultima vez que nos vamos a ver....
-      objectReference: {fileID: 0}
-    - target: {fileID: 3252585182860019170, guid: a9684e8dda9e4dd42b8a7878d52769a3, type: 3}
-      propertyPath: 'lines.Array.data[1]'
-      value: "\xBFMe preguntas porque? Las drogas ya ni te dejan pensar bien."
-      objectReference: {fileID: 0}
-    - target: {fileID: 3252585182860019170, guid: a9684e8dda9e4dd42b8a7878d52769a3, type: 3}
-      propertyPath: 'lines.Array.data[2]'
-      value: Buen Viaje.
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: a9684e8dda9e4dd42b8a7878d52769a3, type: 3}
 --- !u!1001 &530525475
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -28210,6 +28129,107 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8b18482ad72c5914584cf4bd64af022b, type: 3}
+--- !u!1001 &1786088171
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1400372216673893241, guid: d1cf70f9ef77d8f48986839722d66d6c, type: 3}
+      propertyPath: m_Name
+      value: World3NPC(wall)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4225611742285144291, guid: d1cf70f9ef77d8f48986839722d66d6c, type: 3}
+      propertyPath: dialoguePanel
+      value: 
+      objectReference: {fileID: 530525479}
+    - target: {fileID: 4225611742285144291, guid: d1cf70f9ef77d8f48986839722d66d6c, type: 3}
+      propertyPath: interactPanel
+      value: 
+      objectReference: {fileID: 530525477}
+    - target: {fileID: 4225611742285144291, guid: d1cf70f9ef77d8f48986839722d66d6c, type: 3}
+      propertyPath: dialogueUIText
+      value: 
+      objectReference: {fileID: 530525478}
+    - target: {fileID: 4225611742285144291, guid: d1cf70f9ef77d8f48986839722d66d6c, type: 3}
+      propertyPath: lines.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4225611742285144291, guid: d1cf70f9ef77d8f48986839722d66d6c, type: 3}
+      propertyPath: 'lines.Array.data[0]'
+      value: Hola Nick, creo que esta es la ultima vez que nos vamos a ver....
+      objectReference: {fileID: 0}
+    - target: {fileID: 4225611742285144291, guid: d1cf70f9ef77d8f48986839722d66d6c, type: 3}
+      propertyPath: 'lines.Array.data[1]'
+      value: "\xBFMe preguntas porque? Las drogas ya ni te dejan pensar bien."
+      objectReference: {fileID: 0}
+    - target: {fileID: 4225611742285144291, guid: d1cf70f9ef77d8f48986839722d66d6c, type: 3}
+      propertyPath: 'lines.Array.data[2]'
+      value: Buen Viaje.
+      objectReference: {fileID: 0}
+    - target: {fileID: 4225611742285144291, guid: d1cf70f9ef77d8f48986839722d66d6c, type: 3}
+      propertyPath: 'lines.Array.data[3]'
+      value: Buen Viaje.
+      objectReference: {fileID: 0}
+    - target: {fileID: 4225611742285144291, guid: d1cf70f9ef77d8f48986839722d66d6c, type: 3}
+      propertyPath: unlockAbilityOnFinish
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8992720670103703973, guid: d1cf70f9ef77d8f48986839722d66d6c, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.1696
+      objectReference: {fileID: 0}
+    - target: {fileID: 8992720670103703973, guid: d1cf70f9ef77d8f48986839722d66d6c, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.0836
+      objectReference: {fileID: 0}
+    - target: {fileID: 8992720670103703973, guid: d1cf70f9ef77d8f48986839722d66d6c, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 54.5695
+      objectReference: {fileID: 0}
+    - target: {fileID: 8992720670103703973, guid: d1cf70f9ef77d8f48986839722d66d6c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 9.8189
+      objectReference: {fileID: 0}
+    - target: {fileID: 8992720670103703973, guid: d1cf70f9ef77d8f48986839722d66d6c, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8992720670103703973, guid: d1cf70f9ef77d8f48986839722d66d6c, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8992720670103703973, guid: d1cf70f9ef77d8f48986839722d66d6c, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8992720670103703973, guid: d1cf70f9ef77d8f48986839722d66d6c, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8992720670103703973, guid: d1cf70f9ef77d8f48986839722d66d6c, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8992720670103703973, guid: d1cf70f9ef77d8f48986839722d66d6c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8992720670103703973, guid: d1cf70f9ef77d8f48986839722d66d6c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8992720670103703973, guid: d1cf70f9ef77d8f48986839722d66d6c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: d1cf70f9ef77d8f48986839722d66d6c, type: 3}
 --- !u!4 &1851822716 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6956000895778287485, guid: 91f66256adc21c5459ca2f3c427a2753, type: 3}
@@ -29089,4 +29109,4 @@ SceneRoots:
   - {fileID: 837343982}
   - {fileID: 1908910109}
   - {fileID: 450117759}
-  - {fileID: 525683001}
+  - {fileID: 1786088171}

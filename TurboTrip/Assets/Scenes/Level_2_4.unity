@@ -26064,13 +26064,41 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 7990212457890777528, guid: 46104cbc8ff820f45944da48e4a88928, type: 3}
+      propertyPath: dialoguePanel
+      value: 
+      objectReference: {fileID: 1999794525}
+    - target: {fileID: 7990212457890777528, guid: 46104cbc8ff820f45944da48e4a88928, type: 3}
+      propertyPath: interactPanel
+      value: 
+      objectReference: {fileID: 1999794523}
+    - target: {fileID: 7990212457890777528, guid: 46104cbc8ff820f45944da48e4a88928, type: 3}
+      propertyPath: dialogueUIText
+      value: 
+      objectReference: {fileID: 1999794524}
+    - target: {fileID: 7990212457890777528, guid: 46104cbc8ff820f45944da48e4a88928, type: 3}
+      propertyPath: lines.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7990212457890777528, guid: 46104cbc8ff820f45944da48e4a88928, type: 3}
+      propertyPath: 'lines.Array.data[1]'
+      value: Tengo lo que quieres
+      objectReference: {fileID: 0}
+    - target: {fileID: 7990212457890777528, guid: 46104cbc8ff820f45944da48e4a88928, type: 3}
+      propertyPath: 'lines.Array.data[2]'
+      value: (Dash desbloqueado)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7990212457890777528, guid: 46104cbc8ff820f45944da48e4a88928, type: 3}
+      propertyPath: unlockAbilityOnFinish
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8057882814282698681, guid: 46104cbc8ff820f45944da48e4a88928, type: 3}
       propertyPath: m_LocalPosition.x
       value: 53.17
       objectReference: {fileID: 0}
     - target: {fileID: 8057882814282698681, guid: 46104cbc8ff820f45944da48e4a88928, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 3.71
+      value: 3.6
       objectReference: {fileID: 0}
     - target: {fileID: 8057882814282698681, guid: 46104cbc8ff820f45944da48e4a88928, type: 3}
       propertyPath: m_LocalPosition.z
@@ -27376,6 +27404,27 @@ PrefabInstance:
       addedObject: {fileID: 1626343277}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2a0a283b0b62147c48cb1b074c4a8f39, type: 3}
+--- !u!1 &1999794523 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4928511693022105400, guid: 2a0a283b0b62147c48cb1b074c4a8f39, type: 3}
+  m_PrefabInstance: {fileID: 1999794522}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1999794524 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2490259461543606968, guid: 2a0a283b0b62147c48cb1b074c4a8f39, type: 3}
+  m_PrefabInstance: {fileID: 1999794522}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1 &1999794525 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8818566283258460404, guid: 2a0a283b0b62147c48cb1b074c4a8f39, type: 3}
+  m_PrefabInstance: {fileID: 1999794522}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &2129033374 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2031094135244423029, guid: 61d3e11d99b26b84c8b68c5986babc61, type: 3}
