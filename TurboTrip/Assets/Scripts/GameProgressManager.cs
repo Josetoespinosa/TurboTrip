@@ -18,6 +18,11 @@ public class GameProgressManager : MonoBehaviour
     private Dictionary<string, float> levelBestTimes = new Dictionary<string, float>();
     private Dictionary<string, bool> levelCompleted = new Dictionary<string, bool>();
     
+    // Saved progress backup for dev mode toggle
+    private HashSet<string> savedUnlockedWorlds = new HashSet<string>();
+    private HashSet<string> savedUnlockedLevels = new HashSet<string>();
+    private bool isDevModeActive = false;
+    
     // Currently selected world/level for navigation
     public WorldData selectedWorld { get; private set; }
     public LevelData selectedLevel { get; private set; }
@@ -245,6 +250,91 @@ public class GameProgressManager : MonoBehaviour
     
     #endregion
     
+    #region Dev Mode (Unlock All)
+    
+    /// <summary>
+    /// Toggles dev mode which unlocks all levels or restores normal progression
+    /// </summary>
+    public void ToggleDevMode()
+    {
+        if (isDevModeActive)
+        {
+            // Restore normal progression
+            RestoreNormalMode();
+        }
+        else
+        {
+            // Enable dev mode - unlock everything
+            EnableDevMode();
+        }
+    }
+    
+    /// <summary>
+    /// Enables dev mode - unlocks all worlds and levels
+    /// </summary>
+    private void EnableDevMode()
+    {
+        Debug.Log("DEV MODE ENABLED - All levels unlocked!");
+        
+        // Save current progress
+        savedUnlockedWorlds = new HashSet<string>(unlockedWorlds);
+        savedUnlockedLevels = new HashSet<string>(unlockedLevels);
+        
+        // Unlock all worlds
+        unlockedWorlds.Clear();
+        foreach (var world in allWorlds)
+        {
+            if (world != null)
+            {
+                unlockedWorlds.Add(world.worldName);
+            }
+        }
+        
+        // Unlock all levels
+        unlockedLevels.Clear();
+        foreach (var world in allWorlds)
+        {
+            if (world == null || world.levels == null) continue;
+            foreach (var level in world.levels)
+            {
+                if (level != null)
+                {
+                    unlockedLevels.Add(GetLevelKey(level));
+                }
+            }
+        }
+        
+        isDevModeActive = true;
+        PlayerPrefs.SetInt("DevModeActive", 1);
+        PlayerPrefs.Save();
+    }
+    
+    /// <summary>
+    /// Restores normal progression mode
+    /// </summary>
+    private void RestoreNormalMode()
+    {
+        Debug.Log("DEV MODE DISABLED - Restoring normal progression");
+        
+        // Restore saved progress
+        unlockedWorlds = new HashSet<string>(savedUnlockedWorlds);
+        unlockedLevels = new HashSet<string>(savedUnlockedLevels);
+        
+        isDevModeActive = false;
+        PlayerPrefs.SetInt("DevModeActive", 0);
+        SaveProgress();
+    }
+    
+    /// <summary>
+    /// Check if dev mode is currently active
+    /// </summary>
+    public bool IsDevModeActive()
+    {
+        return isDevModeActive;
+    }
+    
+    #endregion
+    
     #region Persistence
     
     private string GetLevelKey(LevelData level)
@@ -279,6 +369,9 @@ public class GameProgressManager : MonoBehaviour
     
     private void LoadProgress()
     {
+        // Check if dev mode was active
+        isDevModeActive = PlayerPrefs.GetInt("DevModeActive", 0) == 1;
+        
         // Load unlocked worlds
         string worldsStr = PlayerPrefs.GetString("UnlockedWorlds", "");
         if (!string.IsNullOrEmpty(worldsStr))
@@ -291,6 +384,12 @@ public class GameProgressManager : MonoBehaviour
         if (!string.IsNullOrEmpty(levelsStr))
         {
             unlockedLevels = new HashSet<string>(levelsStr.Split(','));
+        }
+        
+        // If dev mode is active, re-enable it to unlock everything
+        if (isDevModeActive)
+        {
+            EnableDevMode();
         }
         
         // Load completed levels
