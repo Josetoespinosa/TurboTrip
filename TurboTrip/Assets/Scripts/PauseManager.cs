@@ -30,7 +30,7 @@ public class PauseManager : MonoBehaviour
 
     void Awake()
     {
-        // SOLO ocultar el panel cuando está ejecutándose el juego
+        // SOLO ocultar el panel cuando estï¿½ ejecutï¿½ndose el juego
         if (Application.isPlaying)
         {
             isPaused = false;
@@ -132,7 +132,7 @@ public class PauseManager : MonoBehaviour
                 if (keyb.aKey.isPressed) move += Vector2.left;
                 if (keyb.dKey.isPressed) move += Vector2.right;
 
-                // Movimiento instantáneo sin física
+                // Movimiento instantï¿½neo sin fï¿½sica
                 rb.linearVelocity = move.normalized * moveSpeed;
             }
         }
@@ -177,22 +177,34 @@ public class PauseManager : MonoBehaviour
 
     public void RestartLevel()
     {
+        Debug.Log("Restarting Level");
         Time.timeScale = 1f;
         isPaused = false;
 
+        // Destroy timer instance completely
         if (LevelTimer.Instance != null)
-            Destroy(LevelTimer.Instance.gameObject);
+        {
+            GameObject timerObj = LevelTimer.Instance.gameObject;
+            LevelTimer.Instance = null;
+            Destroy(timerObj);
+        }
 
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     public void ExitToMenu()
     {
+        Debug.Log("Exiting to menu");
         Time.timeScale = 1f;
         isPaused = false;
 
+        // Destroy timer instance completely
         if (LevelTimer.Instance != null)
-            Destroy(LevelTimer.Instance.gameObject);
+        {
+            GameObject timerObj = LevelTimer.Instance.gameObject;
+            LevelTimer.Instance = null;
+            Destroy(timerObj);
+        }
 
         SceneManager.LoadScene(menuSceneName);
     }

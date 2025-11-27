@@ -17,12 +17,20 @@ public class LevelTimer : MonoBehaviour
         else
         {
             Destroy(gameObject);
+            return;
         }
     }
 
     void Start()
     {
+        ResetTimer();
+    }
+
+    public void ResetTimer()
+    {
         startTime = Time.time;
+        finished = false;
+        Debug.Log($"Timer reset at Time.time = {Time.time}");
     }
 
     public void FinishLevel()
@@ -31,6 +39,7 @@ public class LevelTimer : MonoBehaviour
         {
             finished = true;
             endTime = Time.time;
+            Debug.Log($"Level finished at {GetElapsedTime()} seconds");
         }
     }
 
