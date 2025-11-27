@@ -11186,6 +11186,22 @@ PrefabInstance:
       propertyPath: dialogueUIText
       value: 
       objectReference: {fileID: 254192362}
+    - target: {fileID: 7990212457890777528, guid: 46104cbc8ff820f45944da48e4a88928, type: 3}
+      propertyPath: lines.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7990212457890777528, guid: 46104cbc8ff820f45944da48e4a88928, type: 3}
+      propertyPath: 'lines.Array.data[1]'
+      value: No tengo lo que buscas
+      objectReference: {fileID: 0}
+    - target: {fileID: 7990212457890777528, guid: 46104cbc8ff820f45944da48e4a88928, type: 3}
+      propertyPath: 'lines.Array.data[2]'
+      value: Sigue viajando
+      objectReference: {fileID: 0}
+    - target: {fileID: 7990212457890777528, guid: 46104cbc8ff820f45944da48e4a88928, type: 3}
+      propertyPath: unlockAbilityOnFinish
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8057882814282698681, guid: 46104cbc8ff820f45944da48e4a88928, type: 3}
       propertyPath: m_LocalPosition.x
       value: 21.298822

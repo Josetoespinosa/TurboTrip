@@ -3709,6 +3709,10 @@ PrefabInstance:
       propertyPath: dialogueUIText
       value: 
       objectReference: {fileID: 1431050053}
+    - target: {fileID: 4225611742285144291, guid: d1cf70f9ef77d8f48986839722d66d6c, type: 3}
+      propertyPath: 'lines.Array.data[1]'
+      value: Me queda lo ultimo
+      objectReference: {fileID: 0}
     - target: {fileID: 8992720670103703973, guid: d1cf70f9ef77d8f48986839722d66d6c, type: 3}
       propertyPath: m_LocalPosition.x
       value: 35.41
@@ -3716,79 +3720,6 @@ PrefabInstance:
     - target: {fileID: 8992720670103703973, guid: d1cf70f9ef77d8f48986839722d66d6c, type: 3}
       propertyPath: m_LocalPosition.y
       value: 1.9755068
-      objectReference: {fileID: 0}
-    - target: {fileID: 8992720670103703973, guid: d1cf70f9ef77d8f48986839722d66d6c, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8992720670103703973, guid: d1cf70f9ef77d8f48986839722d66d6c, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8992720670103703973, guid: d1cf70f9ef77d8f48986839722d66d6c, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8992720670103703973, guid: d1cf70f9ef77d8f48986839722d66d6c, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8992720670103703973, guid: d1cf70f9ef77d8f48986839722d66d6c, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8992720670103703973, guid: d1cf70f9ef77d8f48986839722d66d6c, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8992720670103703973, guid: d1cf70f9ef77d8f48986839722d66d6c, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8992720670103703973, guid: d1cf70f9ef77d8f48986839722d66d6c, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: d1cf70f9ef77d8f48986839722d66d6c, type: 3}
---- !u!1001 &788397114
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 1400372216673893241, guid: d1cf70f9ef77d8f48986839722d66d6c, type: 3}
-      propertyPath: m_Name
-      value: World3NPC(wall)
-      objectReference: {fileID: 0}
-    - target: {fileID: 4225611742285144291, guid: d1cf70f9ef77d8f48986839722d66d6c, type: 3}
-      propertyPath: dialoguePanel
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 4225611742285144291, guid: d1cf70f9ef77d8f48986839722d66d6c, type: 3}
-      propertyPath: interactPanel
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 4225611742285144291, guid: d1cf70f9ef77d8f48986839722d66d6c, type: 3}
-      propertyPath: dialogueUIText
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 4225611742285144291, guid: d1cf70f9ef77d8f48986839722d66d6c, type: 3}
-      propertyPath: unlockAbilityOnFinish
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8992720670103703973, guid: d1cf70f9ef77d8f48986839722d66d6c, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 21.75
-      objectReference: {fileID: 0}
-    - target: {fileID: 8992720670103703973, guid: d1cf70f9ef77d8f48986839722d66d6c, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 4.837
       objectReference: {fileID: 0}
     - target: {fileID: 8992720670103703973, guid: d1cf70f9ef77d8f48986839722d66d6c, type: 3}
       propertyPath: m_LocalPosition.z
@@ -20031,7 +19962,6 @@ SceneRoots:
   - {fileID: 1244401716}
   - {fileID: 81588202}
   - {fileID: 1368884220}
-  - {fileID: 788397114}
   - {fileID: 1711578177}
   - {fileID: 2036919896}
   - {fileID: 840952918}
