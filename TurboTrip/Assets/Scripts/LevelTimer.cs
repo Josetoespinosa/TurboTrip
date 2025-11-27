@@ -3,8 +3,8 @@ using UnityEngine;
 public class LevelTimer : MonoBehaviour
 {
     public static LevelTimer Instance; 
-    private float startTime;
-    private float endTime;
+    private float elapsedTime = 0f;
+    private bool isRunning = false;
     private bool finished = false;
 
     private void Awake()
@@ -26,11 +26,20 @@ public class LevelTimer : MonoBehaviour
         ResetTimer();
     }
 
+    void Update()
+    {
+        if (isRunning && !finished)
+        {
+            elapsedTime += Time.deltaTime;
+        }
+    }
+
     public void ResetTimer()
     {
-        startTime = Time.time;
+        elapsedTime = 0f;
+        isRunning = true;
         finished = false;
-        Debug.Log($"Timer reset at Time.time = {Time.time}");
+        Debug.Log($"Timer reset - starting at 0 seconds");
     }
 
     public void FinishLevel()
@@ -38,16 +47,13 @@ public class LevelTimer : MonoBehaviour
         if (!finished)
         {
             finished = true;
-            endTime = Time.time;
-            Debug.Log($"Level finished at {GetElapsedTime()} seconds");
+            isRunning = false;
+            Debug.Log($"Level finished at {elapsedTime:F2} seconds");
         }
     }
 
     public float GetElapsedTime()
     {
-        if (finished)
-            return endTime - startTime;
-        else
-            return Time.time - startTime;
+        return elapsedTime;
     }
 }
